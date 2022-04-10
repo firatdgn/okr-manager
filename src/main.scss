@@ -17,6 +17,9 @@ body {
     font-family: Roboto Medium;
     font-size: 18px;
 }
+.menu .menu-list li a:not(a.is-active) {
+    color: rgba($color: #000000, $alpha: 0.3)
+}
 
 .content {
     background-color: #F7F8FA;
