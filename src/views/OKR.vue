@@ -1,11 +1,13 @@
 <template>
     <Quarter></Quarter>
+    <Objective></Objective>
 </template>
 
 <script>
 import Quarter from "../components/Quarter.vue";
+import Objective from "../components/Objective.vue";
 export default {
-    components: { Quarter },
+    components: { Quarter, Objective },
 };
 </script>
 
