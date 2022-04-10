@@ -1,7 +1,12 @@
-<template>OKR</template>
+<template>
+    <Quarter></Quarter>
+</template>
 
 <script>
-export default {};
+import Quarter from "../components/Quarter.vue";
+export default {
+    components: { Quarter },
+};
 </script>
 
 <style>
