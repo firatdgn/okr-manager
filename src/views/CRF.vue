@@ -1,6 +1,4 @@
-<template>
-    <slot></slot>
-</template>
+<template>CRF</template>
 
 <script>
 export default {};

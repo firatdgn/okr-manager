@@ -1,0 +1,23 @@
+@charset "utf-8";
+
+$menu-item-active-color: #623EDA;
+$menu-item-active-background-color: rgba(98, 62, 218, 0.1);
+
+@import url('http://fonts.cdnfonts.com/css/roboto');
+@import "../node_modules/bulma/bulma.sass";
+
+html, body, #app, #app > .columns{
+    height: 100%;
+}
+
+body {
+    font-family: Roboto, sans-serif;
+}
+.menu .menu-list li a {
+    font-family: Roboto Medium;
+    font-size: 18px;
+}
+
+.content {
+    background-color: #F7F8FA;
+}
