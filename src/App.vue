@@ -4,7 +4,10 @@
             <Menu>
                 <li v-for="menuItem of menuItems" :key="menuItem.name">
                     <router-link :to="menuItem.path" class="p-4">
-                        <i :class="menuItem.icon"></i> {{ menuItem.name }}
+                        <span class="icon">
+                            <i :class="menuItem.icon"></i>
+                        </span>
+                        {{ menuItem.name }}
                     </router-link>
                 </li>
             </Menu>
