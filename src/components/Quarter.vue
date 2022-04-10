@@ -2,25 +2,43 @@
     <div
         class="is-flex is-justify-content-space-between is-align-items-baseline"
     >
-        <span class="icon is-large"
+        <span
+            @click="this.$emit('decreaseCurrentQuarter')"
+            class="icon is-large is-clickable"
             ><i class="fa-solid fa-2x fa-angle-left"></i
         ></span>
         <div
             class="box is-flex-grow-3 is-flex is-justify-content-space-between"
         >
-            <div class="quarter-period">Q1</div>
+            <div class="quarter-period">{{ quarter }}</div>
             <div class="quarter-dates is-flex-grow-3">
-                01.01.2022 - 30.04.2022
+                {{ dateRange }}
             </div>
         </div>
-        <span class="icon is-large"
+        <span
+            @click="this.$emit('increaseCurrentQuarter')"
+            class="icon is-large is-clickable"
             ><i class="fa-solid fa-2x fa-angle-right"></i
         ></span>
     </div>
 </template>
 
 <script>
-export default {};
+import { computed } from "@vue/runtime-core";
+export default {
+    props: ["quarter", "startDate", "endDate"],
+    setup(props) {
+        const dateRange = computed(
+            () =>
+                `${props.startDate.format(
+                    "DD.MM.YYYY"
+                )} - ${props.endDate.format("DD.MM.YYYY")}`
+        );
+        return {
+            dateRange,
+        };
+    },
+};
 </script>
 
 <style lang="scss" scoped>
