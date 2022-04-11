@@ -2,9 +2,9 @@
     <Quarter
         @increaseCurrentQuarter="increaseCurrentQuarter"
         @decreaseCurrentQuarter="decreaseCurrentQuarter"
-        :start-date="okr[currentQuarterIndex].startDate"
-        :end-date="okr[currentQuarterIndex].endDate"
-        :quarter="okr[currentQuarterIndex].quarter"
+        :start-date="currentOkr.startDate"
+        :end-date="currentOkr.endDate"
+        :quarter="currentOkr.quarter"
     ></Quarter>
     <Objective></Objective>
 </template>
@@ -16,8 +16,8 @@ import { ref } from "@vue/reactivity";
 export default {
     components: { Quarter, Objective },
     setup() {
-        let currentQuarterIndex = ref(0);
-        let okr = ref([
+        let currentOkrIndex = 0;
+        let okrs = ref([
             {
                 quarter: "Q1",
                 startDate: "2022-01-01",
@@ -34,23 +34,27 @@ export default {
                 objectives: [],
             },
         ]);
-
+        let currentOkr = ref(okrs.value[currentOkrIndex]);
         function increaseCurrentQuarter() {
-            if (okr.value.length - 1 === currentQuarterIndex.value) {
-                return (currentQuarterIndex.value = 0);
+            if (okrs.value.length - 1 === currentOkrIndex) {
+                currentOkrIndex = 0;
+            } else {
+                currentOkrIndex++;
             }
-            currentQuarterIndex.value++;
+            currentOkr.value = okrs.value[currentOkrIndex];
         }
         function decreaseCurrentQuarter() {
-            if (currentQuarterIndex.value === 0) {
-                return (currentQuarterIndex.value = okr.value.length - 1);
+            if (currentOkrIndex === 0) {
+                currentOkrIndex = okrs.value.length - 1;
+            } else {
+                currentOkrIndex--;
             }
-            currentQuarterIndex.value--;
+            currentOkr.value = okrs.value[currentOkrIndex];
         }
 
         return {
-            okr,
-            currentQuarterIndex,
+            okrs,
+            currentOkr,
             increaseCurrentQuarter,
             decreaseCurrentQuarter,
         };
