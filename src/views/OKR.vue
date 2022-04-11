@@ -12,7 +12,6 @@
 <script>
 import Quarter from "../components/Quarter.vue";
 import Objective from "../components/Objective.vue";
-import moment from "moment";
 import { ref } from "@vue/reactivity";
 export default {
     components: { Quarter, Objective },
@@ -21,8 +20,8 @@ export default {
         let okr = ref([
             {
                 quarter: "Q1",
-                startDate: moment("2022-01-01"),
-                endDate: moment("2022-04-30"),
+                startDate: "2022-01-01",
+                endDate: "2022-04-30",
                 objectives: [
                     { index: 1, content: "lorem ipsum", keyResults: [] },
                     { index: 2, content: "lorem ipsum", keyResults: [] },
@@ -30,8 +29,8 @@ export default {
             },
             {
                 quarter: "Q2",
-                startDate: moment("2022-04-01"),
-                endDate: moment("2022-07-30"),
+                startDate: "2022-04-01",
+                endDate: "2022-07-30",
                 objectives: [],
             },
         ]);
