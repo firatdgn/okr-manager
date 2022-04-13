@@ -14,13 +14,10 @@
                     is-flex is-justify-content-center is-align-items-center
                 "
             >
-                O - 1
+                O - {{ objective.index }}
             </div>
             <div class="objective-content is-flex-grow-3">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error
-                sint qui ullam ratione beatae corporis. Quod nostrum harum
-                eveniet magni voluptatibus minima eligendi suscipit id deserunt
-                reprehenderit sapiente, maiores modi.
+                {{ objective.content }}
             </div>
             <div
                 class="
@@ -35,22 +32,48 @@
                 <span class="icon is-medium">
                     <i class="fa-solid fa-lg fa-trash"></i>
                 </span>
-                <span class="icon is-medium">
+                <span
+                    class="icon is-medium"
+                    v-if="hasKeyResults"
+                    @click="toggleKeyResults"
+                >
                     <i class="fa-solid fa-lg fa-angle-up"></i>
                 </span>
             </div>
         </div>
     </div>
-    <div class="key-results">
-        <KeyResult></KeyResult>
-        <KeyResult></KeyResult>
+    <div class="key-results" v-if="showKeyResults">
+        <KeyResult
+            v-for="(keyResult, index) of objective.keyResults"
+            :key="index"
+            :keyResult="keyResult"
+        ></KeyResult>
     </div>
 </template>
 
 <script>
+import { ref } from "@vue/reactivity";
 import KeyResult from "./KeyResult.vue";
+import { computed } from "@vue/runtime-core";
 export default {
     components: { KeyResult },
+    props: ["objective"],
+    setup(props) {
+        let objective = ref(props.objective);
+        let hasKeyResults = computed(
+            () => objective.value.keyResults.length > 0
+        );
+        let showKeyResults = ref(false);
+        function toggleKeyResults() {
+            showKeyResults.value = !showKeyResults.value;
+        }
+        return {
+            objective,
+            hasKeyResults,
+            showKeyResults,
+            toggleKeyResults,
+        };
+    },
 };
 </script>
 

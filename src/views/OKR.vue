@@ -6,7 +6,11 @@
         :end-date="currentOkr.endDate"
         :quarter="currentOkr.quarter"
     ></Quarter>
-    <Objective></Objective>
+    <Objective
+        v-for="(objective, index) of currentOkr.objectives"
+        :key="index"
+        :objective="objective"
+    ></Objective>
 </template>
 
 <script>
@@ -23,7 +27,20 @@ export default {
                 startDate: "2022-01-01",
                 endDate: "2022-04-30",
                 objectives: [
-                    { index: 1, content: "lorem ipsum", keyResults: [] },
+                    {
+                        index: 1,
+                        content: "lorem ipsum",
+                        keyResults: [
+                            {
+                                index: 1,
+                                content: "lorem ipsum",
+                            },
+                            {
+                                index: 2,
+                                content: "lorem ipsum",
+                            },
+                        ],
+                    },
                     { index: 2, content: "lorem ipsum", keyResults: [] },
                 ],
             },
