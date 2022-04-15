@@ -1,6 +1,9 @@
 <template>
     <div
-        class="is-flex is-justify-content-space-between is-align-items-baseline"
+        class="
+            is-flex is-justify-content-space-between is-align-items-baseline
+            key-result
+        "
     >
         <div
             class="box is-flex-grow-3 is-flex is-justify-content-space-between"
@@ -11,13 +14,10 @@
                     is-flex is-justify-content-center is-align-items-center
                 "
             >
-                KR - 1
+                KR - {{ keyResult.index }}
             </div>
             <div class="key-result-content is-flex-grow-3">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Error
-                sint qui ullam ratione beatae corporis. Quod nostrum harum
-                eveniet magni voluptatibus minima eligendi suscipit id deserunt
-                reprehenderit sapiente, maiores modi.
+                {{ keyResult.content }}
             </div>
             <div
                 class="
@@ -41,7 +41,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+    props: ["keyResult"],
+    setup(props) {
+        let keyResult = props.keyResult;
+
+        return {
+            keyResult,
+        };
+    },
+};
 </script>
 
 <style scoped>
