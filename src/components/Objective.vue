@@ -37,7 +37,13 @@
                     v-if="hasKeyResults"
                     @click="toggleKeyResults"
                 >
-                    <i class="fa-solid fa-lg fa-angle-up"></i>
+                    <i
+                        class="fa-solid fa-lg"
+                        :class="{
+                            'fa-angle-up': showKeyResults,
+                            'fa-angle-down': !showKeyResults,
+                        }"
+                    ></i>
                 </span>
             </div>
         </div>
@@ -101,7 +107,8 @@ export default {
 .fa-trash {
     color: #ff4d4d;
 }
-.fa-angle-up {
+.fa-angle-up,
+.fa-angle-down {
     color: rgba(0, 0, 0, 0.3);
 }
 .key-results {
