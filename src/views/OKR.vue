@@ -12,13 +12,13 @@
         :objective="objective"
     ></Objective>
     <CreateNewButton
-        v-if="createNew"
-        @create-new="createNewOkr()"
+        v-if="showCreateNewButton"
+        @create-new="toggleNewOkr"
         text="OKR"
     ></CreateNewButton>
     <CreateNewTarget
         v-else
-        @cancel="createNewOkr()"
+        @cancel="toggleNewOkr"
         @store="storeNewOkr"
         type="objective"
         :number="currentOkr.objectives.length + 1"
@@ -66,7 +66,7 @@ export default {
             },
         ]);
         let currentOkr = ref(okrs.value[currentOkrIndex]);
-        let createNew = ref(true);
+        let showCreateNewButton = ref(true);
         function increaseCurrentQuarter() {
             if (okrs.value.length - 1 === currentOkrIndex) {
                 currentOkrIndex = 0;
@@ -83,11 +83,11 @@ export default {
             }
             currentOkr.value = okrs.value[currentOkrIndex];
         }
-        function createNewOkr() {
-            createNew.value = !createNew.value;
+        function toggleNewOkr() {
+            showCreateNewButton.value = !showCreateNewButton.value;
         }
         function storeNewOkr(newOkr) {
-            createNewOkr();
+            toggleNewOkr();
             currentOkr.value.objectives.push({
                 index: currentOkr.value.objectives.length + 1,
                 content: newOkr,
@@ -97,10 +97,10 @@ export default {
         return {
             okrs,
             currentOkr,
-            createNew,
+            showCreateNewButton,
             increaseCurrentQuarter,
             decreaseCurrentQuarter,
-            createNewOkr,
+            toggleNewOkr,
             storeNewOkr,
         };
     },

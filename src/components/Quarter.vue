@@ -3,7 +3,7 @@
         class="is-flex is-justify-content-space-between is-align-items-baseline"
     >
         <span
-            @click="this.$emit('decreaseCurrentQuarter')"
+            @click="$emit('decreaseCurrentQuarter')"
             class="icon is-large is-clickable"
             ><i class="fa-solid fa-2x fa-angle-left"></i
         ></span>
@@ -16,7 +16,7 @@
             </div>
         </div>
         <span
-            @click="this.$emit('increaseCurrentQuarter')"
+            @click="$emit('increaseCurrentQuarter')"
             class="icon is-large is-clickable"
             ><i class="fa-solid fa-2x fa-angle-right"></i
         ></span>
