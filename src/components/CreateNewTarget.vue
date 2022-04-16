@@ -17,7 +17,13 @@
                 {{ type.content }} - {{ number }}
             </div>
             <div class="target-content is-flex-grow-3">
-                <input class="input" type="text" v-model="newTarget" />
+                <input
+                    class="input"
+                    type="text"
+                    ref="newTargetInput"
+                    @keypress.enter="save"
+                    v-model="newTarget"
+                />
             </div>
             <div
                 class="
@@ -25,10 +31,7 @@
                     pr-3
                 "
             >
-                <span
-                    class="icon is-medium is-clickable"
-                    @click="$emit('store', newTarget)"
-                >
+                <span class="icon is-medium is-clickable" @click="save">
                     <i class="fa-solid fa-lg fa-check"></i>
                 </span>
                 <span
@@ -44,9 +47,10 @@
 
 <script>
 import { ref } from "@vue/reactivity";
+import { onMounted } from "vue";
 export default {
     props: ["type", "number"],
-    setup(props) {
+    setup(props, context) {
         let types = {
             objective: {
                 color: "#ff8a00",
@@ -64,10 +68,19 @@ export default {
         let type = ref(types[props.type]);
 
         let newTarget = ref("");
+        let newTargetInput = ref(null);
+        function save() {
+            context.emit("store", newTarget);
+        }
+        onMounted(() => {
+            newTargetInput.value.focus();
+        });
 
         return {
             type,
             newTarget,
+            save,
+            newTargetInput,
         };
     },
 };
