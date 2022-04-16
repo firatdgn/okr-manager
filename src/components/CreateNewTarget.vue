@@ -17,7 +17,7 @@
                 {{ type.content }} - {{ number }}
             </div>
             <div class="target-content is-flex-grow-3">
-                <input class="input" type="text" />
+                <input class="input" type="text" v-model="newTarget" />
             </div>
             <div
                 class="
@@ -25,7 +25,10 @@
                     pr-3
                 "
             >
-                <span class="icon is-medium">
+                <span
+                    class="icon is-medium is-clickable"
+                    @click="$emit('store', newTarget)"
+                >
                     <i class="fa-solid fa-lg fa-check"></i>
                 </span>
                 <span
@@ -60,8 +63,11 @@ export default {
         };
         let type = ref(types[props.type]);
 
+        let newTarget = ref("");
+
         return {
             type,
+            newTarget,
         };
     },
 };

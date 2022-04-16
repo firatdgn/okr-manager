@@ -19,6 +19,7 @@
     <CreateNewTarget
         v-else
         @cancel="createNewOkr()"
+        @store="storeNewOkr"
         type="objective"
         :number="currentOkr.objectives.length + 1"
     ></CreateNewTarget>
@@ -85,6 +86,14 @@ export default {
         function createNewOkr() {
             createNew.value = !createNew.value;
         }
+        function storeNewOkr(newOkr) {
+            createNewOkr();
+            currentOkr.value.objectives.push({
+                index: currentOkr.value.objectives.length + 1,
+                content: newOkr,
+                keyResults: [],
+            });
+        }
         return {
             okrs,
             currentOkr,
@@ -92,6 +101,7 @@ export default {
             increaseCurrentQuarter,
             decreaseCurrentQuarter,
             createNewOkr,
+            storeNewOkr,
         };
     },
 };
