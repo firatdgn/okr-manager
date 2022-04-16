@@ -11,14 +11,27 @@
         :key="index"
         :objective="objective"
     ></Objective>
+    <CreateNewButton
+        v-if="createNew"
+        @create-new="createNewOkr()"
+        text="OKR"
+    ></CreateNewButton>
+    <CreateNewTarget
+        v-else
+        @cancel="createNewOkr()"
+        type="objective"
+        :number="currentOkr.objectives.length + 1"
+    ></CreateNewTarget>
 </template>
 
 <script>
 import Quarter from "../components/Quarter.vue";
 import Objective from "../components/Objective.vue";
+import CreateNewButton from "../components/CreateNewButton.vue";
 import { ref } from "@vue/reactivity";
+import CreateNewTarget from "../components/CreateNewTarget.vue";
 export default {
-    components: { Quarter, Objective },
+    components: { Quarter, Objective, CreateNewButton, CreateNewTarget },
     setup() {
         let currentOkrIndex = 0;
         let okrs = ref([
@@ -52,6 +65,7 @@ export default {
             },
         ]);
         let currentOkr = ref(okrs.value[currentOkrIndex]);
+        let createNew = ref(true);
         function increaseCurrentQuarter() {
             if (okrs.value.length - 1 === currentOkrIndex) {
                 currentOkrIndex = 0;
@@ -68,12 +82,16 @@ export default {
             }
             currentOkr.value = okrs.value[currentOkrIndex];
         }
-
+        function createNewOkr() {
+            createNew.value = !createNew.value;
+        }
         return {
             okrs,
             currentOkr,
+            createNew,
             increaseCurrentQuarter,
             decreaseCurrentQuarter,
+            createNewOkr,
         };
     },
 };
