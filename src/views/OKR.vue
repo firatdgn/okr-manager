@@ -8,7 +8,7 @@
     ></Quarter>
     <Objective
         v-for="(objective, index) of currentOkr.objectives"
-        :key="index"
+        :key="currentOkr.quarter + '-' + index"
         :objective="objective"
     ></Objective>
     <CreateNewButton
