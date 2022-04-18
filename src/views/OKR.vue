@@ -8,12 +8,14 @@
     ></Quarter>
     <Objective
         v-for="(objective, index) of currentOkr.objectives"
-        :key="currentOkr.quarter + '-' + index"
+        :key="objective.id"
+        :order="index + 1"
         :objective="objective"
+        @deleteObjective="deleteObjective"
     ></Objective>
     <CreateNewButton
         v-if="showCreateNewButton"
-        @create-new="toggleNewOkr"
+        @createNew="toggleNewOkr"
         text="OKR"
     ></CreateNewButton>
     <CreateNewTarget
@@ -42,20 +44,20 @@ export default {
                 endDate: "2022-04-30",
                 objectives: [
                     {
-                        index: 1,
+                        id: 1,
                         content: "lorem ipsum",
                         keyResults: [
                             {
-                                index: 1,
+                                id: 1,
                                 content: "lorem ipsum",
                             },
                             {
-                                index: 2,
+                                id: 2,
                                 content: "lorem ipsum",
                             },
                         ],
                     },
-                    { index: 2, content: "lorem ipsum", keyResults: [] },
+                    { id: 2, content: "lorem ipsum", keyResults: [] },
                 ],
             },
             {
@@ -89,10 +91,19 @@ export default {
         function storeNewOkr(newOkr) {
             toggleNewOkr();
             currentOkr.value.objectives.push({
-                index: currentOkr.value.objectives.length + 1,
+                //TODO: add here id which comes from db
+                id: currentOkr.value.objectives.length + 1,
                 content: newOkr,
                 keyResults: [],
             });
+        }
+        function deleteObjective(deletedObjective) {
+            if (confirm("Do you really want to delete this Objective?")) {
+                currentOkr.value.objectives =
+                    currentOkr.value.objectives.filter((elem) => {
+                        return elem.id !== deletedObjective.value.id;
+                    });
+            }
         }
         return {
             okrs,
@@ -102,6 +113,7 @@ export default {
             decreaseCurrentQuarter,
             toggleNewOkr,
             storeNewOkr,
+            deleteObjective,
         };
     },
 };

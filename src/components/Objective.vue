@@ -14,7 +14,7 @@
                     is-flex is-justify-content-center is-align-items-center
                 "
             >
-                O - {{ objective.index }}
+                O - {{ order }}
             </div>
             <div class="objective-content is-flex-grow-3">
                 {{ objective.content }}
@@ -29,7 +29,10 @@
                 <span class="icon is-medium">
                     <i class="fa-solid fa-lg fa-pen"></i>
                 </span>
-                <span class="icon is-medium">
+                <span
+                    class="icon is-medium is-clickable"
+                    @click="deleteObjective"
+                >
                     <i class="fa-solid fa-lg fa-trash"></i>
                 </span>
                 <span
@@ -51,7 +54,8 @@
     <div class="key-results" v-if="showKeyResults">
         <KeyResult
             v-for="(keyResult, index) of objective.keyResults"
-            :key="index"
+            :key="keyResult.id"
+            :order="index + 1"
             :keyResult="keyResult"
         ></KeyResult>
     </div>
@@ -63,8 +67,8 @@ import KeyResult from "./KeyResult.vue";
 import { computed } from "@vue/runtime-core";
 export default {
     components: { KeyResult },
-    props: ["objective"],
-    setup(props) {
+    props: ["objective", "order"],
+    setup(props, context) {
         let objective = ref(props.objective);
         let hasKeyResults = computed(
             () => objective.value.keyResults.length > 0
@@ -73,11 +77,15 @@ export default {
         function toggleKeyResults() {
             showKeyResults.value = !showKeyResults.value;
         }
+        function deleteObjective() {
+            context.emit("deleteObjective", objective);
+        }
         return {
             objective,
             hasKeyResults,
             showKeyResults,
             toggleKeyResults,
+            deleteObjective,
         };
     },
 };

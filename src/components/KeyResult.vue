@@ -14,7 +14,7 @@
                     is-flex is-justify-content-center is-align-items-center
                 "
             >
-                KR - {{ keyResult.index }}
+                KR - {{ order }}
             </div>
             <div class="key-result-content is-flex-grow-3">
                 {{ keyResult.content }}
@@ -42,7 +42,7 @@
 
 <script>
 export default {
-    props: ["keyResult"],
+    props: ["keyResult", "order"],
     setup(props) {
         let keyResult = props.keyResult;
 
