@@ -20,13 +20,7 @@
                 <input
                     class="input"
                     type="text"
-                    :ref="
-                        (el) => {
-                            if (el) {
-                                el.focus();
-                            }
-                        }
-                    "
+                    :ref="(el) => el && el.focus()"
                     v-if="keyResult.isEditing"
                     v-model="keyResult.content"
                     @keydown.enter="toggleEditKeyResult"
