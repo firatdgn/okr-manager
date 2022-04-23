@@ -21,7 +21,8 @@
                     class="input"
                     type="text"
                     ref="newTargetInput"
-                    @keypress.enter="save"
+                    @keydown.enter="save"
+                    @keydown.esc="$emit('cancel')"
                     v-model="newTarget"
                 />
             </div>
