@@ -54,11 +54,7 @@
                 >
                     <i class="fa-solid fa-lg fa-trash"></i>
                 </span>
-                <span
-                    class="icon is-medium"
-                    v-if="hasKeyResults"
-                    @click="toggleKeyResults"
-                >
+                <span class="icon is-medium" @click="toggleKeyResults">
                     <i
                         class="fa-solid fa-lg"
                         :class="{
@@ -76,22 +72,32 @@
             :key="keyResult.id"
             :order="index + 1"
             :keyResult="keyResult"
-        ></KeyResult>
+        ></KeyResult
+        ><CreateNewButton
+            v-if="showCreateNewButton"
+            @createNew="toggleNewKeyResult"
+            text="Key Result"
+        ></CreateNewButton>
+        <CreateNewTarget
+            v-else
+            @cancel="toggleNewKeyResult"
+            @store="storeNewKeyResult"
+            type="keyResult"
+            :number="objective.keyResults.length + 1"
+        ></CreateNewTarget>
     </div>
 </template>
 
 <script>
 import { ref } from "@vue/reactivity";
 import KeyResult from "./KeyResult.vue";
-import { computed } from "@vue/runtime-core";
+import CreateNewButton from "./CreateNewButton.vue";
+import CreateNewTarget from "./CreateNewTarget.vue";
 export default {
-    components: { KeyResult },
+    components: { KeyResult, CreateNewButton, CreateNewTarget },
     props: ["objective", "order"],
     setup(props, context) {
         let objective = ref(props.objective);
-        let hasKeyResults = computed(
-            () => objective.value.keyResults.length > 0
-        );
         let showKeyResults = ref(false);
         function toggleKeyResults() {
             showKeyResults.value = !showKeyResults.value;
@@ -108,13 +114,27 @@ export default {
             }
             objective.value.isEditing = !objective.value.isEditing;
         }
+        let showCreateNewButton = ref(true);
+        function toggleNewKeyResult() {
+            showCreateNewButton.value = !showCreateNewButton.value;
+        }
+        function storeNewKeyResult(keyResultContent) {
+            toggleNewKeyResult();
+            objective.value.keyResults.push({
+                //TODO: add here id which comes from db
+                id: objective.value.keyResults.length + 1,
+                content: keyResultContent,
+            });
+        }
         return {
             objective,
-            hasKeyResults,
             showKeyResults,
+            showCreateNewButton,
             toggleKeyResults,
             deleteObjective,
             toggleEditObjective,
+            toggleNewKeyResult,
+            storeNewKeyResult,
         };
     },
 };
