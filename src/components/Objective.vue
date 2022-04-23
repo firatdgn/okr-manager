@@ -17,7 +17,15 @@
                 O - {{ order }}
             </div>
             <div class="objective-content is-flex-grow-3">
-                {{ objective.content }}
+                <input
+                    class="input"
+                    type="text"
+                    v-if="objective.isEditing"
+                    v-model="objective.content"
+                    @keydown.enter="toggleEditObjective"
+                    @keydown.esc="toggleEditObjective"
+                />
+                <span v-else>{{ objective.content }}</span>
             </div>
             <div
                 class="
@@ -26,11 +34,22 @@
                     pr-3
                 "
             >
-                <span class="icon is-medium">
+                <span
+                    class="icon is-medium is-clickable"
+                    @click="toggleEditObjective"
+                >
                     <i class="fa-solid fa-lg fa-pen"></i>
                 </span>
                 <span
                     class="icon is-medium is-clickable"
+                    v-if="objective.isEditing"
+                    @click="toggleEditObjective($event, true)"
+                >
+                    <i class="fa-solid fa-lg fa-xmark"></i>
+                </span>
+                <span
+                    class="icon is-medium is-clickable"
+                    v-else
                     @click="deleteObjective"
                 >
                     <i class="fa-solid fa-lg fa-trash"></i>
@@ -80,12 +99,22 @@ export default {
         function deleteObjective() {
             context.emit("deleteObjective", objective);
         }
+        let oldContent = objective.value.content;
+        function toggleEditObjective(e, isValueSame = false) {
+            if (e.keyCode === 27 || isValueSame) {
+                objective.value.content = oldContent;
+            } else {
+                oldContent = objective.value.content;
+            }
+            objective.value.isEditing = !objective.value.isEditing;
+        }
         return {
             objective,
             hasKeyResults,
             showKeyResults,
             toggleKeyResults,
             deleteObjective,
+            toggleEditObjective,
         };
     },
 };
@@ -112,7 +141,8 @@ export default {
 .fa-pen {
     color: #4d74ff;
 }
-.fa-trash {
+.fa-trash,
+.fa-xmark {
     color: #ff4d4d;
 }
 .fa-angle-up,
