@@ -131,7 +131,7 @@ export default {
         // Key Result
         function deleteKeyResult(deletedKeyResult) {
             console.log(deletedKeyResult.id);
-            if (confirm("Do you really want to delete this Objective?")) {
+            if (confirm("Do you really want to delete this Key Result?")) {
                 objective.value.keyResults = objective.value.keyResults.filter(
                     (elem) => deletedKeyResult.id !== elem.id
                 );
