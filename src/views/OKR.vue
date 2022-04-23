@@ -102,9 +102,9 @@ export default {
         function deleteObjective(deletedObjective) {
             if (confirm("Do you really want to delete this Objective?")) {
                 currentOkr.value.objectives =
-                    currentOkr.value.objectives.filter((elem) => {
-                        return elem.id !== deletedObjective.value.id;
-                    });
+                    currentOkr.value.objectives.filter(
+                        (elem) => elem.id !== deletedObjective.value.id
+                    );
             }
         }
         return {
