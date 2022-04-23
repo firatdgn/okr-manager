@@ -63,21 +63,22 @@
 </template>
 
 <script>
+import { ref } from "@vue/reactivity";
 export default {
     props: ["keyResult", "order"],
     setup(props, context) {
-        let keyResult = props.keyResult;
+        let keyResult = ref(props.keyResult);
         function deleteKeyResult() {
             context.emit("deleteKeyResult", keyResult);
         }
-        let oldContent = keyResult.content;
+        let oldContent = keyResult.value.content;
         function toggleEditKeyResult(e, isValueSame = false) {
             if (e.keyCode === 27 || isValueSame) {
-                keyResult.content = oldContent;
+                keyResult.value.content = oldContent;
             } else {
-                oldContent = keyResult.content;
+                oldContent = keyResult.value.content;
             }
-            keyResult.isEditing = !keyResult.isEditing;
+            keyResult.value.isEditing = !keyResult.value.isEditing;
         }
         return {
             keyResult,
