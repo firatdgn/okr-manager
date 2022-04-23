@@ -22,6 +22,13 @@
                     type="text"
                     v-if="objective.isEditing"
                     v-model="objective.content"
+                    :ref="
+                        (el) => {
+                            if (el) {
+                                el.focus();
+                            }
+                        }
+                    "
                     @keydown.enter="toggleEditObjective"
                     @keydown.esc="toggleEditObjective"
                 />
