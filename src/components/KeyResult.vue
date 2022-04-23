@@ -17,7 +17,15 @@
                 KR - {{ order }}
             </div>
             <div class="key-result-content is-flex-grow-3">
-                {{ keyResult.content }}
+                <input
+                    class="input"
+                    type="text"
+                    v-if="keyResult.isEditing"
+                    v-model="keyResult.content"
+                    @keydown.enter="toggleEditKeyResult"
+                    @keydown.esc="toggleEditKeyResult"
+                />
+                <span v-else>{{ keyResult.content }}</span>
             </div>
             <div
                 class="
@@ -26,11 +34,22 @@
                     pr-3
                 "
             >
-                <span class="icon is-medium">
+                <span
+                    class="icon is-medium is-clickable"
+                    @click="toggleEditKeyResult"
+                >
                     <i class="fa-solid fa-lg fa-pen"></i>
                 </span>
                 <span
                     class="icon is-medium is-clickable"
+                    v-if="keyResult.isEditing"
+                    @click="toggleEditKeyResult($event, true)"
+                >
+                    <i class="fa-solid fa-lg fa-xmark"></i>
+                </span>
+                <span
+                    class="icon is-medium is-clickable"
+                    v-else
                     @click="deleteKeyResult"
                 >
                     <i class="fa-solid fa-lg fa-trash"></i>
@@ -51,9 +70,19 @@ export default {
         function deleteKeyResult() {
             context.emit("deleteKeyResult", keyResult);
         }
+        let oldContent = keyResult.content;
+        function toggleEditKeyResult(e, isValueSame = false) {
+            if (e.keyCode === 27 || isValueSame) {
+                keyResult.content = oldContent;
+            } else {
+                oldContent = keyResult.content;
+            }
+            keyResult.isEditing = !keyResult.isEditing;
+        }
         return {
             keyResult,
             deleteKeyResult,
+            toggleEditKeyResult,
         };
     },
 };
@@ -80,7 +109,8 @@ export default {
 .fa-pen {
     color: #4d74ff;
 }
-.fa-trash {
+.fa-trash,
+.fa-xmark {
     color: #ff4d4d;
 }
 .fa-angle-up {
