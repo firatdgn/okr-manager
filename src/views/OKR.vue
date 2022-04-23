@@ -8,7 +8,7 @@
     ></Quarter>
     <Objective
         v-for="(objective, index) of currentOkr.objectives"
-        :key="objective.quarter + objective.id"
+        :key="objective.id"
         :order="index + 1"
         :objective="objective"
         @deleteObjective="deleteObjective"
@@ -92,7 +92,9 @@ export default {
             toggleNewOkr();
             currentOkr.value.objectives.push({
                 //TODO: add here id which comes from db
-                id: currentOkr.value.objectives.length + 1,
+                id:
+                    `${currentOkr.value.quarter.split("Q")[1]}` +
+                    (currentOkr.value.objectives.length + 1),
                 content: newOkr,
                 keyResults: [],
             });
