@@ -72,6 +72,7 @@
             :key="keyResult.id"
             :order="index + 1"
             :keyResult="keyResult"
+            @deleteKeyResult="deleteKeyResult"
         ></KeyResult
         ><CreateNewButton
             v-if="showCreateNewButton"
@@ -97,6 +98,7 @@ export default {
     components: { KeyResult, CreateNewButton, CreateNewTarget },
     props: ["objective", "order"],
     setup(props, context) {
+        // Objective
         let objective = ref(props.objective);
         let showKeyResults = ref(false);
         function toggleKeyResults() {
@@ -126,6 +128,15 @@ export default {
                 content: keyResultContent,
             });
         }
+        // Key Result
+        function deleteKeyResult(deletedKeyResult) {
+            console.log(deletedKeyResult.id);
+            if (confirm("Do you really want to delete this Objective?")) {
+                objective.value.keyResults = objective.value.keyResults.filter(
+                    (elem) => deletedKeyResult.id !== elem.id
+                );
+            }
+        }
         return {
             objective,
             showKeyResults,
@@ -135,6 +146,7 @@ export default {
             toggleEditObjective,
             toggleNewKeyResult,
             storeNewKeyResult,
+            deleteKeyResult,
         };
     },
 };

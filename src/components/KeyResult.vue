@@ -29,7 +29,10 @@
                 <span class="icon is-medium">
                     <i class="fa-solid fa-lg fa-pen"></i>
                 </span>
-                <span class="icon is-medium">
+                <span
+                    class="icon is-medium is-clickable"
+                    @click="deleteKeyResult"
+                >
                     <i class="fa-solid fa-lg fa-trash"></i>
                 </span>
                 <span class="icon is-medium" v-if="false">
@@ -43,11 +46,14 @@
 <script>
 export default {
     props: ["keyResult", "order"],
-    setup(props) {
+    setup(props, context) {
         let keyResult = props.keyResult;
-
+        function deleteKeyResult() {
+            context.emit("deleteKeyResult", keyResult);
+        }
         return {
             keyResult,
+            deleteKeyResult,
         };
     },
 };
