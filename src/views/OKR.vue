@@ -8,7 +8,7 @@
     ></Quarter>
     <Objective
         v-for="(objective, index) of currentOkr.objectives"
-        :key="objective.id"
+        :key="objective.quarter + objective.id"
         :order="index + 1"
         :objective="objective"
         @deleteObjective="deleteObjective"
