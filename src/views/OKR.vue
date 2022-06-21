@@ -122,7 +122,4 @@ export default {
 </script>
 
 <style>
-.objective:not(:first-child) {
-    margin-top: 2em;
-}
 </style>
