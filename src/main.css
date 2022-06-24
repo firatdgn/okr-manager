@@ -7863,5 +7863,5 @@ body {
 .content {
   background-color: #F7F8FA; }
 
-.objective:not(:first-child), .bhag:not(:first-child) {
+.objective:not(:nth-child(2)), .bhag {
   margin-top: 2em; }
