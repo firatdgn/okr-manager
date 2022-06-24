@@ -62,8 +62,12 @@ export default {
                 content: "KR",
             },
             bhag: {
-                color: "#ff0000",
+                color: "#da3e3e",
                 content: "BHAG",
+            },
+            quarter: {
+                color: "#623eda",
+                content: "Q",
             },
         };
         let type = ref(types[props.type]);
