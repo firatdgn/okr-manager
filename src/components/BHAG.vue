@@ -134,16 +134,11 @@ export default {
                 return;
             }
             toggleNewQuarter();
-            let startDate = moment(quarterContent.value.startDate).format(
-                "DD.MM.YYYY"
-            );
-            let endDate = moment(quarterContent.value.endDate).format(
-                "DD.MM.YYYY"
-            );
             bhag.value.quarters.push({
                 //TODO: add here id which comes from db
                 id: bhag.value.quarters.length + 1,
-                content: `${startDate} - ${endDate}`,
+                startDate: quarterContent.value.startDate,
+                endDate: quarterContent.value.endDate,
             });
         }
         function deleteQuarter(deletedQuarter) {
