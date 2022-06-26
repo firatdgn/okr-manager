@@ -17,16 +17,23 @@
                 Q - {{ order }}
             </div>
             <div class="quarter-content is-flex-grow-3">
-                <input
-                    class="input"
-                    type="text"
-                    :ref="(el) => el && el.focus()"
-                    v-if="quarter.isEditing"
-                    v-model="quarter.content"
-                    @keydown.enter="toggleEditQuarter"
-                    @keydown.esc="toggleEditQuarter"
-                />
-                <span v-else>{{ quarter.content }}</span>
+                <div class="is-flex" v-if="quarter.isEditing">
+                    <input
+                        class="input"
+                        type="date"
+                        @keydown.enter="toggleEditQuarter"
+                        @keydown.esc="toggleEditQuarter"
+                        v-model="quarter.startDate"
+                    />
+                    <input
+                        class="input"
+                        type="date"
+                        @keydown.enter="toggleEditQuarter"
+                        @keydown.esc="toggleEditQuarter"
+                        v-model="quarter.endDate"
+                    />
+                </div>
+                <span v-else>{{ quarterContent }}</span>
             </div>
             <div
                 class="
@@ -65,19 +72,28 @@
 
 <script>
 import { ref } from "@vue/reactivity";
+import { computed } from "@vue/runtime-core";
+import moment from "moment";
 export default {
     props: ["quarter", "order"],
     setup(props, context) {
         let quarter = ref(props.quarter);
+        const quarterContent = computed(() => {
+            let startDate = moment(quarter.value.startDate).format(
+                "DD.MM.YYYY"
+            );
+            let endDate = moment(quarter.value.endDate).format("DD.MM.YYYY");
+            return `${startDate} - ${endDate}`;
+        });
         function deleteQuarter() {
             context.emit("deleteQuarter", quarter);
         }
-        let oldContent = quarter.value.content;
+        let oldQuarter = quarter.value.content;
         function toggleEditQuarter(e, isValueSame = false) {
             if (e.keyCode === 27 || isValueSame) {
-                quarter.value.content = oldContent;
+                quarter.value.content = oldQuarter;
             } else {
-                oldContent = quarter.value.content;
+                oldQuarter = quarter.value;
             }
             quarter.value.isEditing = !quarter.value.isEditing;
         }
@@ -85,6 +101,7 @@ export default {
             quarter,
             deleteQuarter,
             toggleEditQuarter,
+            quarterContent,
         };
     },
 };
