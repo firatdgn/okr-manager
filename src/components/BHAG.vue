@@ -86,16 +86,17 @@
             @store="storeNewQuarter"
             type="quarter"
             :number="bhag.quarters.length + 1"
+            targetType="quarter"
         ></CreateNewTarget>
     </div>
 </template>
 
 <script>
-//TODO: make component for quarters of bhag
 import { ref } from "@vue/reactivity";
 import CreateNewButton from "./CreateNewButton.vue";
 import CreateNewTarget from "./CreateNewTarget.vue";
 import BhagQuarter from "./BhagQuarter.vue";
+import moment from "moment";
 export default {
     props: ["order", "bhag"],
     setup(props, context) {
@@ -121,11 +122,28 @@ export default {
             showCreateNewButton.value = !showCreateNewButton.value;
         }
         function storeNewQuarter(quarterContent) {
+            if (quarterContent.value.startDate > quarterContent.value.endDate) {
+                alert(`Start Date can't be bigger than End Date.`);
+                return;
+            }
+            if (
+                !quarterContent.value.startDate ||
+                !quarterContent.value.endDate
+            ) {
+                alert(`One of the given date is invalid.`);
+                return;
+            }
             toggleNewQuarter();
+            let startDate = moment(quarterContent.value.startDate).format(
+                "DD.MM.YYYY"
+            );
+            let endDate = moment(quarterContent.value.endDate).format(
+                "DD.MM.YYYY"
+            );
             bhag.value.quarters.push({
                 //TODO: add here id which comes from db
                 id: bhag.value.quarters.length + 1,
-                content: quarterContent,
+                content: `${startDate} - ${endDate}`,
             });
         }
         function deleteQuarter(deletedQuarter) {

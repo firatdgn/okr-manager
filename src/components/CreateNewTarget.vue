@@ -17,14 +17,33 @@
                 {{ type.content }} - {{ number }}
             </div>
             <div class="target-content is-flex-grow-3">
-                <input
-                    class="input"
-                    type="text"
-                    ref="newTargetInput"
-                    @keydown.enter="save"
-                    @keydown.esc="$emit('cancel')"
-                    v-model="newTarget"
-                />
+                <div v-if="targetType === 'okr'">
+                    <input
+                        class="input"
+                        type="text"
+                        ref="newTargetInput"
+                        @keydown.enter="save"
+                        @keydown.esc="$emit('cancel')"
+                        v-model="newTarget"
+                    />
+                </div>
+                <div class="is-flex" v-else-if="targetType === 'quarter'">
+                    <input
+                        class="input"
+                        type="date"
+                        ref="newTargetInput"
+                        @keydown.enter="save"
+                        @keydown.esc="$emit('cancel')"
+                        v-model="newTarget.startDate"
+                    />
+                    <input
+                        class="input"
+                        type="date"
+                        @keydown.enter="save"
+                        @keydown.esc="$emit('cancel')"
+                        v-model="newTarget.endDate"
+                    />
+                </div>
             </div>
             <div
                 class="
@@ -50,7 +69,13 @@
 import { ref } from "@vue/reactivity";
 import { onMounted } from "vue";
 export default {
-    props: ["type", "number"],
+    props: {
+        type: String,
+        number: Number,
+        targetType: {
+            default: "okr",
+        },
+    },
     setup(props, context) {
         let types = {
             objective: {
@@ -72,7 +97,15 @@ export default {
         };
         let type = ref(types[props.type]);
 
-        let newTarget = ref("");
+        let newTarget;
+        if (props.targetType === "okr") {
+            newTarget = ref("");
+        } else if (props.targetType === "quarter") {
+            newTarget = ref({
+                startDate: "",
+                endDate: "",
+            });
+        }
         let newTargetInput = ref(null);
         function save() {
             context.emit("store", newTarget);
