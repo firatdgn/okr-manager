@@ -106,10 +106,10 @@ export default {
                 endDate: "",
             });
         }
-        let newTargetInput = ref(null);
         function save() {
             context.emit("store", newTarget);
         }
+        let newTargetInput = ref(null);
         onMounted(() => {
             newTargetInput.value.focus();
         });
