@@ -6,14 +6,30 @@
         :order="key + 1"
         @deleteBhag="deleteBhag"
     ></BHAG>
+    <CreateNewButton
+        v-if="showCreateNewButton"
+        @createNew="toggleNewBhag"
+        text="BHAG"
+    ></CreateNewButton>
+    <CreateNewTarget
+        v-else
+        @cancel="toggleNewBhag"
+        @store="storeNewBhag"
+        type="bhag"
+        :number="bhags.length + 1"
+    ></CreateNewTarget>
 </template>
 
 <script>
 import { ref } from "@vue/reactivity";
 import BHAG from "../components/BHAG.vue";
+import CreateNewTarget from "../components/CreateNewTarget.vue";
+import CreateNewButton from "../components/CreateNewButton.vue";
 export default {
     components: {
         BHAG,
+        CreateNewTarget,
+        CreateNewButton,
     },
     setup() {
         let bhags = ref([
@@ -46,9 +62,26 @@ export default {
                 );
             }
         }
+
+        let showCreateNewButton = ref(true);
+        function toggleNewBhag() {
+            showCreateNewButton.value = !showCreateNewButton.value;
+        }
+        function storeNewBhag(newBhag) {
+            toggleNewBhag();
+            bhags.value.push({
+                //TODO: add here id which comes from db
+                id: bhags.value.length,
+                content: newBhag,
+                quarters: [],
+            });
+        }
         return {
             bhags,
             deleteBhag,
+            showCreateNewButton,
+            toggleNewBhag,
+            storeNewBhag,
         };
     },
 };
