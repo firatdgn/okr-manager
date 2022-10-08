@@ -38,35 +38,73 @@
                 <span
                     class="icon is-medium is-clickable"
                     @click="toggleEditKeyResult"
+                    v-if="!hideActions"
                 >
                     <i class="fa-solid fa-lg fa-pen"></i>
                 </span>
                 <span
                     class="icon is-medium is-clickable"
-                    v-if="keyResult.isEditing"
+                    v-if="keyResult.isEditing && !hideActions"
                     @click="toggleEditKeyResult($event, true)"
                 >
                     <i class="fa-solid fa-lg fa-xmark"></i>
                 </span>
                 <span
                     class="icon is-medium is-clickable"
-                    v-else
+                    v-else-if="!hideActions"
                     @click="deleteKeyResult"
                 >
                     <i class="fa-solid fa-lg fa-trash"></i>
                 </span>
-                <span class="icon is-medium" v-if="false">
-                    <i class="fa-solid fa-lg fa-angle-up"></i>
+                <span
+                    class="icon is-medium"
+                    v-if="displayCrfs"
+                    @click="toggleCrfs"
+                >
+                    <i
+                        class="fa-solid fa-lg"
+                        :class="{
+                            'fa-angle-up': showCrfs,
+                            'fa-angle-down': !showCrfs,
+                        }"
+                    ></i>
                 </span>
             </div>
         </div>
+    </div>
+    <div class="is-flex is-flex-wrap-wrap crfs" v-if="showCrfs">
+        <CRF
+            v-for="(crf, index) of keyResult.crfs"
+            v-bind:key="crf.id"
+            :crf="crf"
+            :order="index + 1"
+            @deleteCrf="deleteCrf"
+        ></CRF>
+        <CreateNewButton
+            class="create-new-button"
+            v-if="showCreateNewButton"
+            @createNew="toggleNewCrf"
+            text="CRF"
+        ></CreateNewButton>
+        <CreateNewTarget
+            class="create-new-target"
+            v-else-if="!showCreateNewButton"
+            @cancel="toggleNewCrf"
+            @store="storeNewCrf"
+            type="crf"
+            targetType="crf"
+            :number="keyResult.crfs.length + 1"
+        ></CreateNewTarget>
     </div>
 </template>
 
 <script>
 import { ref } from "@vue/reactivity";
+import CRF from "./CRF.vue";
+import CreateNewButton from "./CreateNewButton.vue";
+import CreateNewTarget from "./CreateNewTarget.vue";
 export default {
-    props: ["keyResult", "order"],
+    props: ["keyResult", "order", "displayCrfs", "hideActions"],
     setup(props, context) {
         let keyResult = ref(props.keyResult);
         function deleteKeyResult() {
@@ -81,12 +119,39 @@ export default {
             }
             keyResult.value.isEditing = !keyResult.value.isEditing;
         }
+        let showCrfs = ref(false);
+        function toggleCrfs() {
+            showCrfs.value = !showCrfs.value;
+        }
+        function deleteCrf(deletedCrf) {
+            if (confirm("Do you really want to delete this CRF")) {
+                keyResult.value.crfs = keyResult.value.crfs.filter(
+                    (elem) => deletedCrf.value.id !== elem.id
+                );
+            }
+        }
+        let showCreateNewButton = ref(true);
+        function toggleNewCrf() {
+            showCreateNewButton.value = !showCreateNewButton.value;
+        }
+        function storeNewCrf(newCrf) {
+            //TODO: add id of CRF
+            keyResult.value.crfs.push(newCrf);
+            toggleNewCrf();
+        }
         return {
             keyResult,
             deleteKeyResult,
             toggleEditKeyResult,
+            showCrfs,
+            toggleCrfs,
+            deleteCrf,
+            showCreateNewButton,
+            toggleNewCrf,
+            storeNewCrf,
         };
     },
+    components: { CRF, CreateNewButton, CreateNewTarget },
 };
 </script>
 
@@ -115,7 +180,35 @@ export default {
 .fa-xmark {
     color: #ff4d4d;
 }
-.fa-angle-up {
+.fa-angle-up,
+.fa-angle-down {
     color: rgba(0, 0, 0, 0.3);
+}
+.crfs {
+    margin-bottom: 3%;
+}
+.create-new-button {
+    margin-top: 1%;
+    width: 40%;
+    margin-left: 7.7%;
+}
+.create-new-button:nth-child(odd) {
+    margin-left: 7.7%;
+}
+.create-new-target:nth-child(odd) {
+    margin-left: 7.7%;
+    margin-right: -13%;
+}
+.create-new-target {
+    width: 40%;
+    margin-left: 7.7%;
+}
+</style>
+<style>
+.create-new-target .target-number {
+    font-size: 13px !important;
+}
+.create-new-target .box {
+    margin-left: 2.7%;
 }
 </style>

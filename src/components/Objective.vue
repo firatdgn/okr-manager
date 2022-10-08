@@ -38,19 +38,20 @@
                 <span
                     class="icon is-medium is-clickable"
                     @click="toggleEditObjective"
+                    v-if="!hideActions"
                 >
                     <i class="fa-solid fa-lg fa-pen"></i>
                 </span>
                 <span
                     class="icon is-medium is-clickable"
-                    v-if="objective.isEditing"
+                    v-if="objective.isEditing && !hideActions"
                     @click="toggleEditObjective($event, true)"
                 >
                     <i class="fa-solid fa-lg fa-xmark"></i>
                 </span>
                 <span
                     class="icon is-medium is-clickable"
-                    v-else
+                    v-else-if="!hideActions"
                     @click="deleteObjective"
                 >
                     <i class="fa-solid fa-lg fa-trash"></i>
@@ -73,15 +74,17 @@
             :key="keyResult.id"
             :order="index + 1"
             :keyResult="keyResult"
+            :displayCrfs="displayCrfs"
+            :hideActions="hideActions"
             @deleteKeyResult="deleteKeyResult"
         ></KeyResult
         ><CreateNewButton
-            v-if="showCreateNewButton"
+            v-if="showCreateNewButton && !displayCrfs"
             @createNew="toggleNewKeyResult"
             text="Key Result"
         ></CreateNewButton>
         <CreateNewTarget
-            v-else
+            v-else-if="!showCreateNewButton && !displayCrfs"
             @cancel="toggleNewKeyResult"
             @store="storeNewKeyResult"
             type="keyResult"
@@ -97,7 +100,7 @@ import CreateNewButton from "./CreateNewButton.vue";
 import CreateNewTarget from "./CreateNewTarget.vue";
 export default {
     components: { KeyResult, CreateNewButton, CreateNewTarget },
-    props: ["objective", "order"],
+    props: ["objective", "order", "displayCrfs", "hideActions"],
     setup(props, context) {
         // Objective
         let objective = ref(props.objective);

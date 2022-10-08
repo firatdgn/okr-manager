@@ -44,6 +44,23 @@
                         v-model="newTarget.endDate"
                     />
                 </div>
+                <div class="is-flex" v-else-if="targetType === 'crf'">
+                    <input
+                        class="input"
+                        type="date"
+                        ref="newTargetInput"
+                        @keydown.enter="save"
+                        @keydown.esc="$emit('cancel')"
+                        v-model="newTarget.date"
+                    />
+                    <input
+                        class="input"
+                        type="text"
+                        @keydown.enter="save"
+                        @keydown.esc="$emit('cancel')"
+                        v-model="newTarget.current"
+                    />
+                </div>
             </div>
             <div
                 class="
@@ -94,6 +111,10 @@ export default {
                 color: "#623eda",
                 content: "Q",
             },
+            crf: {
+                color: "#4d74ff",
+                content: "CRF",
+            },
         };
         let type = ref(types[props.type]);
 
@@ -104,6 +125,11 @@ export default {
             newTarget = ref({
                 startDate: "",
                 endDate: "",
+            });
+        } else if (props.targetType === "crf") {
+            newTarget = ref({
+                date: "",
+                current: "",
             });
         }
         function save() {
