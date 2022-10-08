@@ -96,7 +96,6 @@ import { ref } from "@vue/reactivity";
 import CreateNewButton from "./CreateNewButton.vue";
 import CreateNewTarget from "./CreateNewTarget.vue";
 import BhagQuarter from "./BhagQuarter.vue";
-import moment from "moment";
 export default {
     props: ["order", "bhag"],
     setup(props, context) {
