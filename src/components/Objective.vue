@@ -26,7 +26,13 @@
                     @keydown.enter="toggleEditObjective"
                     @keydown.esc="toggleEditObjective"
                 />
-                <span v-else>{{ objective.content }}</span>
+                <span v-else
+                    >{{ objective.content
+                    }}<ProgressBar
+                        :currentStatus="objectiveCurrentStatus"
+                        :finishedAt="objectiveFinishedAt"
+                    ></ProgressBar
+                ></span>
             </div>
             <div
                 class="
@@ -88,18 +94,20 @@
             @cancel="toggleNewKeyResult"
             @store="storeNewKeyResult"
             type="keyResult"
+            target-type="keyResult"
             :number="objective.keyResults.length + 1"
         ></CreateNewTarget>
     </div>
 </template>
 
 <script>
-import { ref } from "@vue/reactivity";
+import { computed, ref } from "@vue/reactivity";
 import KeyResult from "./KeyResult.vue";
 import CreateNewButton from "./CreateNewButton.vue";
 import CreateNewTarget from "./CreateNewTarget.vue";
+import ProgressBar from "./ProgressBar.vue";
 export default {
-    components: { KeyResult, CreateNewButton, CreateNewTarget },
+    components: { KeyResult, CreateNewButton, CreateNewTarget, ProgressBar },
     props: ["objective", "order", "displayCrfs", "hideActions"],
     setup(props, context) {
         // Objective
@@ -129,7 +137,8 @@ export default {
             objective.value.keyResults.push({
                 //TODO: add here id which comes from db
                 id: objective.value.keyResults.length + 1,
-                content: keyResultContent,
+                content: keyResultContent.value.content,
+                finishedAt: keyResultContent.value.finishedAt,
             });
         }
         // Key Result
@@ -140,6 +149,29 @@ export default {
                 );
             }
         }
+        let objectiveCurrentStatus = computed(() => {
+            let currentStatus = 0;
+            for (let keyResult of objective.value.keyResults) {
+                if (keyResult.crfs && keyResult.crfs.length > 0) {
+                    currentStatus += parseInt(
+                        keyResult.crfs[keyResult.crfs.length - 1].currentStatus
+                            ? keyResult.crfs[keyResult.crfs.length - 1]
+                                  .currentStatus
+                            : keyResult.crfs[keyResult.crfs.length - 1].value
+                                  .currentStatus
+                    );
+                } else if (keyResult.currentStatus > 0) {
+                    //TODO: check this condition when pinia is implemented
+                    currentStatus += keyResult.currentStatus;
+                }
+            }
+            return currentStatus;
+        });
+        let objectiveFinishedAt = computed(() => {
+            return objective.value.keyResults.reduce((finishedAt, elem) => {
+                return finishedAt + parseInt(elem.finishedAt);
+            }, 0);
+        });
         return {
             objective,
             showKeyResults,
@@ -150,6 +182,8 @@ export default {
             toggleNewKeyResult,
             storeNewKeyResult,
             deleteKeyResult,
+            objectiveCurrentStatus,
+            objectiveFinishedAt,
         };
     },
 };

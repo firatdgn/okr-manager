@@ -16,13 +16,14 @@
     <CreateNewButton
         v-if="showCreateNewButton"
         @createNew="toggleNewOkr"
-        text="OKR"
+        text="Objective"
     ></CreateNewButton>
     <CreateNewTarget
         v-else
         @cancel="toggleNewOkr"
         @store="storeNewOkr"
         type="objective"
+        target-type="objective"
         :number="currentOkr.objectives.length + 1"
     ></CreateNewTarget>
 </template>
@@ -50,14 +51,22 @@ export default {
                             {
                                 id: 1,
                                 content: "lorem ipsum",
+                                finishedAt: 100,
+                                currentStatus: 50,
                             },
                             {
                                 id: 2,
                                 content: "lorem ipsum",
+                                finishedAt: 10,
+                                currentStatus: 50,
                             },
                         ],
                     },
-                    { id: 2, content: "lorem ipsum", keyResults: [] },
+                    {
+                        id: 2,
+                        content: "lorem ipsum",
+                        keyResults: [],
+                    },
                 ],
             },
             {

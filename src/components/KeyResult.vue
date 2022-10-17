@@ -26,7 +26,22 @@
                     @keydown.enter="toggleEditKeyResult"
                     @keydown.esc="toggleEditKeyResult"
                 />
-                <span v-else>{{ keyResult.content }}</span>
+                <input
+                    class="input mt-3"
+                    type="text"
+                    :ref="(el) => el && el.focus()"
+                    v-if="keyResult.isEditing"
+                    v-model="keyResult.finishedAt"
+                    @keydown.enter="toggleEditKeyResult"
+                    @keydown.esc="toggleEditKeyResult"
+                />
+                <span v-else
+                    >{{ keyResult.content }}
+                    <ProgressBar
+                        :currentStatus="keyResultCurrentStatus"
+                        :finishedAt="keyResult.finishedAt"
+                    ></ProgressBar
+                ></span>
             </div>
             <div
                 class="
@@ -99,12 +114,19 @@
 </template>
 
 <script>
-import { ref } from "@vue/reactivity";
+import { computed, ref } from "@vue/reactivity";
 import CRF from "./CRF.vue";
 import CreateNewButton from "./CreateNewButton.vue";
 import CreateNewTarget from "./CreateNewTarget.vue";
+import ProgressBar from "./ProgressBar.vue";
 export default {
     props: ["keyResult", "order", "displayCrfs", "hideActions"],
+    components: {
+        CRF,
+        CreateNewButton,
+        CreateNewTarget,
+        ProgressBar,
+    },
     setup(props, context) {
         let keyResult = ref(props.keyResult);
         function deleteKeyResult() {
@@ -139,6 +161,23 @@ export default {
             keyResult.value.crfs.push(newCrf);
             toggleNewCrf();
         }
+        let keyResultCurrentStatus = computed(() => {
+            if (keyResult.value.crfs && keyResult.value.crfs.length > 0) {
+                if (
+                    keyResult.value.crfs[keyResult.value.crfs.length - 1]
+                        .currentStatus
+                ) {
+                    return keyResult.value.crfs[keyResult.value.crfs.length - 1]
+                        .currentStatus;
+                }
+                return keyResult.value.crfs[keyResult.value.crfs.length - 1]
+                    .value.currentStatus;
+            } else if (keyResult.value.currentStatus > 0) {
+                //TODO: check this condition when pinia is implemented
+                return keyResult.value.currentStatus;
+            }
+            return 0;
+        });
         return {
             keyResult,
             deleteKeyResult,
@@ -149,9 +188,9 @@ export default {
             showCreateNewButton,
             toggleNewCrf,
             storeNewCrf,
+            keyResultCurrentStatus,
         };
     },
-    components: { CRF, CreateNewButton, CreateNewTarget },
 };
 </script>
 

@@ -28,11 +28,13 @@
                         class="input is-align-self-center"
                         type="text"
                         placeholder="Current"
-                        v-model="currentCrf.current"
+                        v-model="currentCrf.currentStatus"
+                        @keydown.enter="toggleEditing"
+                        @keydown.esc="toggleEditing"
                     />
                 </template>
                 <span class="pl-3 is-align-self-center" v-else
-                    >{{ formattedDate }} - {{ currentCrf.current }}</span
+                    >{{ formattedDate }} - {{ currentCrf.currentStatus }}</span
                 >
             </div>
             <div
@@ -51,7 +53,7 @@
                 <span
                     class="icon is-medium is-clickable"
                     v-if="isEditing"
-                    @click="toggleEditing"
+                    @click="toggleEditing($event, true)"
                 >
                     <i class="fa-solid fa-lg fa-xmark"></i>
                 </span>
@@ -76,7 +78,18 @@ export default {
     setup(props, context) {
         let currentCrf = ref(props.crf);
         let isEditing = ref(false);
-        function toggleEditing() {
+        let oldContent = {
+            currentStatus: currentCrf.value.currentStatus,
+            date: currentCrf.value.date,
+        };
+        function toggleEditing(e, isValueSame = false) {
+            if (e.keyCode === 27 || isValueSame) {
+                currentCrf.value.currentStatus = oldContent.currentStatus;
+                currentCrf.value.date = oldContent.date;
+            } else {
+                oldContent.currentStatus = currentCrf.value.currentStatus;
+                oldContent.date = currentCrf.value.date;
+            }
             isEditing.value = !isEditing.value;
         }
         let formattedDate = computed(() =>

@@ -40,20 +40,27 @@ export default {
                             {
                                 id: 1,
                                 content: "lorem ipsum",
+                                finishedAt: 100,
                                 crfs: [
                                     {
                                         date: "2022-01-01",
-                                        current: 89,
+                                        currentStatus: 89,
                                     },
                                 ],
                             },
                             {
                                 id: 2,
                                 content: "lorem ipsum",
+                                finishedAt: 100,
+                                crfs: [],
                             },
                         ],
                     },
-                    { id: 2, content: "lorem ipsum", keyResults: [] },
+                    {
+                        id: 2,
+                        content: "lorem ipsum",
+                        keyResults: [],
+                    },
                 ],
             },
             {

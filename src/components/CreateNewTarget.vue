@@ -17,7 +17,7 @@
                 {{ type.content }} - {{ number }}
             </div>
             <div class="target-content is-flex-grow-3">
-                <div v-if="targetType === 'okr'">
+                <div v-if="targetType === 'objective'">
                     <input
                         class="input"
                         type="text"
@@ -25,6 +25,23 @@
                         @keydown.enter="save"
                         @keydown.esc="$emit('cancel')"
                         v-model="newTarget"
+                    />
+                </div>
+                <div v-else-if="targetType === 'keyResult'">
+                    <input
+                        class="input"
+                        type="text"
+                        ref="newTargetInput"
+                        @keydown.enter="save"
+                        @keydown.esc="$emit('cancel')"
+                        v-model="newTarget.content"
+                    />
+                    <input
+                        class="input mt-3"
+                        type="text"
+                        @keydown.enter="save"
+                        @keydown.esc="$emit('cancel')"
+                        v-model="newTarget.finishedAt"
                     />
                 </div>
                 <div class="is-flex" v-else-if="targetType === 'quarter'">
@@ -58,7 +75,7 @@
                         type="text"
                         @keydown.enter="save"
                         @keydown.esc="$emit('cancel')"
-                        v-model="newTarget.current"
+                        v-model="newTarget.currentStatus"
                     />
                 </div>
             </div>
@@ -119,8 +136,13 @@ export default {
         let type = ref(types[props.type]);
 
         let newTarget;
-        if (props.targetType === "okr") {
+        if (props.targetType === "objective") {
             newTarget = ref("");
+        } else if (props.targetType === "keyResult") {
+            newTarget = ref({
+                content: "",
+                finishedAt: "",
+            });
         } else if (props.targetType === "quarter") {
             newTarget = ref({
                 startDate: "",
@@ -129,7 +151,7 @@ export default {
         } else if (props.targetType === "crf") {
             newTarget = ref({
                 date: "",
-                current: "",
+                currentStatus: "",
             });
         }
         function save() {
