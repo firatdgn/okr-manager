@@ -139,6 +139,7 @@ export default {
                 id: objective.value.keyResults.length + 1,
                 content: keyResultContent.value.content,
                 finishedAt: keyResultContent.value.finishedAt,
+                crfs: [],
             });
         }
         // Key Result
@@ -206,6 +207,7 @@ export default {
 }
 .objective-content {
     padding: 1.25em;
+    word-break: break-word;
 }
 .fa-pen {
     color: #4d74ff;

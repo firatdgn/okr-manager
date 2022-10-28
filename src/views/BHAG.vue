@@ -25,6 +25,7 @@ import { ref } from "@vue/reactivity";
 import BHAG from "../components/BHAG.vue";
 import CreateNewTarget from "../components/CreateNewTarget.vue";
 import CreateNewButton from "../components/CreateNewButton.vue";
+import { useOkrStore } from "../store/Okr";
 export default {
     components: {
         BHAG,
@@ -32,29 +33,7 @@ export default {
         CreateNewButton,
     },
     setup() {
-        let bhags = ref([
-            {
-                id: 1,
-                content: "Lorem ipsum",
-                quarters: [
-                    {
-                        quarter: "Q2",
-                        startDate: "2022-04-01",
-                        endDate: "2022-07-30",
-                    },
-                ],
-            },
-            {
-                id: 2,
-                content: "Lorem ipsum",
-                quarters: [],
-            },
-            {
-                id: 3,
-                content: "Lorem ipsum",
-                quarters: [],
-            },
-        ]);
+        let bhags = ref(useOkrStore().bhags);
         function deleteBhag(deletedBhag) {
             if (confirm("Do you really want to delete this BHAG?")) {
                 bhags.value = bhags.value.filter(

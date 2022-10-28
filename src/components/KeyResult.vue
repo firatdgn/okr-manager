@@ -29,14 +29,13 @@
                 <input
                     class="input mt-3"
                     type="text"
-                    :ref="(el) => el && el.focus()"
                     v-if="keyResult.isEditing"
                     v-model="keyResult.finishedAt"
                     @keydown.enter="toggleEditKeyResult"
                     @keydown.esc="toggleEditKeyResult"
                 />
                 <span v-else
-                    >{{ keyResult.content }}
+                    >{{ keyResult.content }} - {{ keyResult.finishedAt }}
                     <ProgressBar
                         :currentStatus="keyResultCurrentStatus"
                         :finishedAt="keyResult.finishedAt"
@@ -211,6 +210,7 @@ export default {
 }
 .key-result-content {
     padding: 1.25em;
+    word-break: break-word;
 }
 .fa-pen {
     color: #4d74ff;

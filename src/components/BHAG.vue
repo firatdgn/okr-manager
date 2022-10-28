@@ -181,6 +181,7 @@ export default {
 }
 .bhag-content {
     padding: 1.25em;
+    word-break: break-word;
 }
 .fa-pen {
     color: #4d74ff;

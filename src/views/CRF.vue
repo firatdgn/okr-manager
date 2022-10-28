@@ -23,53 +23,36 @@ import Objective from "../components/Objective.vue";
 import CreateNewButton from "../components/CreateNewButton.vue";
 import { ref } from "@vue/reactivity";
 import CreateNewTarget from "../components/CreateNewTarget.vue";
+import { useOkrStore } from "../store/Okr";
+import { isInRange } from "../helpers/generic";
 export default {
     components: { Quarter, Objective, CreateNewButton, CreateNewTarget },
     setup() {
-        let currentOkrIndex = 0;
-        let okrs = ref([
-            {
-                quarter: "Q1",
-                startDate: "2022-01-01",
-                endDate: "2022-04-30",
-                objectives: [
-                    {
-                        id: 1,
-                        content: "lorem ipsum",
-                        keyResults: [
-                            {
-                                id: 1,
-                                content: "lorem ipsum",
-                                finishedAt: 100,
-                                crfs: [
-                                    {
-                                        date: "2022-01-01",
-                                        currentStatus: 89,
-                                    },
-                                ],
-                            },
-                            {
-                                id: 2,
-                                content: "lorem ipsum",
-                                finishedAt: 100,
-                                crfs: [],
-                            },
-                        ],
-                    },
-                    {
-                        id: 2,
-                        content: "lorem ipsum",
-                        keyResults: [],
-                    },
-                ],
-            },
-            {
-                quarter: "Q2",
-                startDate: "2022-04-01",
-                endDate: "2022-07-30",
-                objectives: [],
-            },
-        ]);
+        let okrs;
+        let currentOkrIndex;
+        for (let bhag of useOkrStore().bhags) {
+            currentOkrIndex = 0;
+            for (let quarter of bhag.quarters) {
+                if (
+                    isInRange(
+                        Date.now(),
+                        new Date(quarter.startDate).getTime(),
+                        new Date(quarter.endDate).getTime()
+                    )
+                ) {
+                    okrs = ref(bhag.quarters);
+                    break;
+                }
+                currentOkrIndex++;
+            }
+            if (okrs) {
+                break;
+            }
+        }
+        if (!okrs) {
+            okrs = ref(useOkrStore().bhags[0].quarters);
+            currentOkrIndex = 0;
+        }
         let currentOkr = ref(okrs.value[currentOkrIndex]);
         let showCreateNewButton = ref(true);
         function increaseCurrentQuarter() {
@@ -88,20 +71,6 @@ export default {
             }
             currentOkr.value = okrs.value[currentOkrIndex];
         }
-        function toggleNewOkr() {
-            showCreateNewButton.value = !showCreateNewButton.value;
-        }
-        function storeNewOkr(newOkr) {
-            toggleNewOkr();
-            currentOkr.value.objectives.push({
-                //TODO: add here id which comes from db
-                id:
-                    `${currentOkr.value.quarter.split("Q")[1]}` +
-                    (currentOkr.value.objectives.length + 1),
-                content: newOkr,
-                keyResults: [],
-            });
-        }
         function deleteObjective(deletedObjective) {
             if (confirm("Do you really want to delete this Objective?")) {
                 currentOkr.value.objectives =
@@ -116,8 +85,6 @@ export default {
             showCreateNewButton,
             increaseCurrentQuarter,
             decreaseCurrentQuarter,
-            toggleNewOkr,
-            storeNewOkr,
             deleteObjective,
         };
     },
