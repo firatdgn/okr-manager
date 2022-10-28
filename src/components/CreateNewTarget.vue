@@ -32,6 +32,7 @@
                         class="input"
                         type="text"
                         ref="newTargetInput"
+                        placeholder="Key Result"
                         @keydown.enter="save"
                         @keydown.esc="$emit('cancel')"
                         v-model="newTarget.content"
@@ -39,6 +40,7 @@
                     <input
                         class="input mt-3"
                         type="text"
+                        placeholder="100"
                         @keydown.enter="save"
                         @keydown.esc="$emit('cancel')"
                         v-model="newTarget.finishedAt"
