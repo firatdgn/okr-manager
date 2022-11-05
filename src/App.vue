@@ -1,5 +1,5 @@
 <template>
-    <div class="columns">
+    <div v-if="isLoggedIn" class="columns">
         <div class="column is-2 p-5">
             <Menu>
                 <li v-for="menuItem of menuItems" :key="menuItem.name">
@@ -16,21 +16,24 @@
             <router-view></router-view>
         </div>
     </div>
+    <Login @loggedIn="isLoggedIn = true" v-else></Login>
 </template>
 
 <script>
 import Menu from "./views/Menu.vue";
+import Login from "./views/Login.vue";
 import { ref } from "vue";
 import { routes } from "./router/index.js";
 
 export default {
     name: "App",
-    components: { Menu },
+    components: { Menu, Login },
     setup() {
         const menuItems = ref(routes);
-
+        let isLoggedIn = ref(false);
         return {
             menuItems,
+            isLoggedIn,
         };
     },
 };
