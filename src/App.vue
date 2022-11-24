@@ -25,6 +25,8 @@ import Login from "./views/Login.vue";
 import { ref } from "vue";
 import { routes } from "./router/index.js";
 
+//TODO: support PWA in future
+
 export default {
     name: "App",
     components: { Menu, Login },
