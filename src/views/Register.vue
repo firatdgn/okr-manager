@@ -8,7 +8,7 @@
         "
     >
         <div class="box" style="width: 40%">
-            <h1 class="title has-text-centered">Login</h1>
+            <h1 class="title has-text-centered">Register</h1>
             <div class="field">
                 <label class="label">Username</label>
                 <div class="control">
@@ -24,11 +24,11 @@
             <div class="field is-flex is-justify-content-end">
                 <div class="control">
                     <div class="buttons">
+                        <button class="button is-danger" @click="cancel">
+                            Cancel
+                        </button>
                         <button class="button is-link" @click="register">
                             Register
-                        </button>
-                        <button class="button is-success" @click="login">
-                            Login
                         </button>
                     </div>
                 </div>
@@ -43,18 +43,16 @@ export default {
     setup(props, ctx) {
         let username = ref("");
         let password = ref("");
-        function register() {
-            ctx.emit("registering");
-        }
-        function login() {
-            ctx.emit("loggedIn");
+        function register() {}
+        function cancel() {
+            ctx.emit("cancel");
         }
 
         return {
             username,
             password,
-            login,
             register,
+            cancel,
         };
     },
 };

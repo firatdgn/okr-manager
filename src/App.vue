@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isLoggedIn" class="columns">
+    <div v-if="isLoggedIn && !isRegistering" class="columns">
         <div class="column is-2 p-5">
             <Menu>
                 <li v-for="menuItem of menuItems" :key="menuItem.name">
@@ -16,7 +16,12 @@
             <router-view></router-view>
         </div>
     </div>
-    <Login @loggedIn="isLoggedIn = true" v-else></Login>
+    <Login
+        @loggedIn="isLoggedIn = true"
+        @registering="isRegistering = true"
+        v-else-if="!isRegistering"
+    ></Login>
+    <Register v-if="isRegistering" @cancel="isRegistering = false"></Register>
 </template>
 
 <script>
@@ -24,18 +29,21 @@ import Menu from "./views/Menu.vue";
 import Login from "./views/Login.vue";
 import { ref } from "vue";
 import { routes } from "./router/index.js";
+import Register from "./views/Register.vue";
 
 //TODO: support PWA in future
 
 export default {
     name: "App",
-    components: { Menu, Login },
+    components: { Menu, Login, Register },
     setup() {
         const menuItems = ref(routes);
-        let isLoggedIn = ref(false);
+        const isLoggedIn = ref(false);
+        const isRegistering = ref(false);
         return {
             menuItems,
             isLoggedIn,
+            isRegistering,
         };
     },
 };
