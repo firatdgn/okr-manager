@@ -39,11 +39,26 @@
 
 <script>
 import { ref } from "@vue/reactivity";
+import Form from "../helpers/form";
 export default {
     setup(props, ctx) {
         let username = ref("");
         let password = ref("");
-        function register() {}
+        function register() {
+            let form = new Form("http://localhost:8888/users/sign-up", {
+                username: username.value,
+                password: password.value,
+            });
+            form.post().then((response) => {
+                if (
+                    response.status === 201 &&
+                    response.data.status === "success"
+                ) {
+                    alert(response.data.message);
+                    ctx.emit("registered");
+                }
+            });
+        }
         function cancel() {
             ctx.emit("cancel");
         }

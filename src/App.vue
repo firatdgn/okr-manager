@@ -21,7 +21,11 @@
         @registering="isRegistering = true"
         v-else-if="!isRegistering"
     ></Login>
-    <Register v-if="isRegistering" @cancel="isRegistering = false"></Register>
+    <Register
+        v-if="isRegistering"
+        @registered="isRegistering = false"
+        @cancel="isRegistering = false"
+    ></Register>
 </template>
 
 <script>
