@@ -39,6 +39,7 @@
 
 <script>
 import { ref } from "@vue/reactivity";
+import Form from "../helpers/form";
 export default {
     setup(props, ctx) {
         let username = ref("");
@@ -47,7 +48,19 @@ export default {
             ctx.emit("registering");
         }
         function login() {
-            ctx.emit("loggedIn");
+            let form = new Form("http://localhost:8888/users/sign-in", {
+                username: username.value,
+                password: password.value,
+            });
+            form.post().then((response) => {
+                if (
+                    response.status === 200 &&
+                    response.data.status === "success"
+                ) {
+                    sessionStorage.setItem("accessToken", response.data.data);
+                    ctx.emit("loggedIn");
+                }
+            });
         }
 
         return {
