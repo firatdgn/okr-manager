@@ -17,7 +17,7 @@
                 {{ type.content }} - {{ number }}
             </div>
             <div class="target-content is-flex-grow-3">
-                <div v-if="targetType === 'objective'">
+                <div v-if="targetType === 'objective' || targetType === 'bhag'">
                     <input
                         class="input"
                         type="text"
@@ -138,7 +138,7 @@ export default {
         let type = ref(types[props.type]);
 
         let newTarget;
-        if (props.targetType === "objective") {
+        if (props.targetType === "objective" || props.targetType === "bhag") {
             newTarget = ref("");
         } else if (props.targetType === "keyResult") {
             newTarget = ref({

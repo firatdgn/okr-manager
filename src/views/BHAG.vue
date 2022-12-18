@@ -16,6 +16,7 @@
         @cancel="toggleNewBhag"
         @store="storeNewBhag"
         type="bhag"
+        target-type="bhag"
         :number="bhags.length + 1"
     ></CreateNewTarget>
 </template>
@@ -26,6 +27,7 @@ import BHAG from "../components/BHAG.vue";
 import CreateNewTarget from "../components/CreateNewTarget.vue";
 import CreateNewButton from "../components/CreateNewButton.vue";
 import { useOkrStore } from "../store/Okr";
+import Form from "../helpers/form";
 export default {
     components: {
         BHAG,
@@ -34,7 +36,7 @@ export default {
     },
     setup() {
         const store = useOkrStore();
-        let bhags = store.bhags;
+        let bhags = ref(store.bhags);
         function deleteBhag(deletedBhag) {
             if (confirm("Do you really want to delete this BHAG?")) {
                 bhags.value = bhags.value.filter(
@@ -49,12 +51,16 @@ export default {
         }
         function storeNewBhag(newBhag) {
             toggleNewBhag();
-            bhags.value.push({
-                //TODO: add here id which comes from db
-                id: bhags.value.length,
-                content: newBhag,
-                quarters: [],
-            });
+            new Form("bhags", {
+                bhagContent: newBhag.value,
+            })
+                .post()
+                .then(() => {
+                    Form.getBhags().then((response) => {
+                        store.resetBhags();
+                        bhags.value = store.bhags;
+                    });
+                });
         }
         return {
             bhags,
