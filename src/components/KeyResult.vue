@@ -164,7 +164,7 @@ export default {
             if (keyResult.value.crfs && keyResult.value.crfs.length > 0) {
                 if (
                     keyResult.value.crfs[keyResult.value.crfs.length - 1]
-                        .currentStatus
+                        .currentStatus >= 0
                 ) {
                     return keyResult.value.crfs[keyResult.value.crfs.length - 1]
                         .currentStatus;

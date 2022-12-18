@@ -33,7 +33,8 @@ export default {
         CreateNewButton,
     },
     setup() {
-        let bhags = ref(useOkrStore().bhags);
+        const store = useOkrStore();
+        let bhags = store.bhags;
         function deleteBhag(deletedBhag) {
             if (confirm("Do you really want to delete this BHAG?")) {
                 bhags.value = bhags.value.filter(

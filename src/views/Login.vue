@@ -58,7 +58,15 @@ export default {
                     response.data.status === "success"
                 ) {
                     sessionStorage.setItem("accessToken", response.data.data);
-                    ctx.emit("loggedIn");
+                    new Form("http://localhost:8888/bhags")
+                        .get()
+                        .then((okrResponse) => {
+                            sessionStorage.setItem(
+                                "okr",
+                                JSON.stringify(okrResponse.data)
+                            );
+                            ctx.emit("loggedIn");
+                        });
                 }
             });
         }

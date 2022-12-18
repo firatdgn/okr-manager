@@ -41,7 +41,9 @@ export default {
     setup() {
         let okrs;
         let currentOkrIndex;
-        for (let bhag of useOkrStore().bhags) {
+        const store = useOkrStore();
+        let bhags = store.bhags;
+        for (let bhag of bhags) {
             currentOkrIndex = 0;
             for (let quarter of bhag.quarters) {
                 if (
@@ -61,7 +63,7 @@ export default {
             }
         }
         if (!okrs) {
-            okrs = ref(useOkrStore().bhags[0].quarters);
+            okrs = ref(store.bhags[0].quarters);
             currentOkrIndex = 0;
         }
         let currentOkr = ref(okrs.value[currentOkrIndex]);

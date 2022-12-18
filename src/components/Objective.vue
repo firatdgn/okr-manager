@@ -155,7 +155,8 @@ export default {
             for (let keyResult of objective.value.keyResults) {
                 if (keyResult.crfs && keyResult.crfs.length > 0) {
                     currentStatus += parseInt(
-                        keyResult.crfs[keyResult.crfs.length - 1].currentStatus
+                        keyResult.crfs[keyResult.crfs.length - 1]
+                            .currentStatus >= 0
                             ? keyResult.crfs[keyResult.crfs.length - 1]
                                   .currentStatus
                             : keyResult.crfs[keyResult.crfs.length - 1].value

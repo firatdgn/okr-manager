@@ -28,9 +28,11 @@ import { isInRange } from "../helpers/generic";
 export default {
     components: { Quarter, Objective, CreateNewButton, CreateNewTarget },
     setup() {
+        const store = useOkrStore();
+        let bhags = store.bhags;
         let okrs;
         let currentOkrIndex;
-        for (let bhag of useOkrStore().bhags) {
+        for (let bhag of bhags) {
             currentOkrIndex = 0;
             for (let quarter of bhag.quarters) {
                 if (
@@ -50,7 +52,7 @@ export default {
             }
         }
         if (!okrs) {
-            okrs = ref(useOkrStore().bhags[0].quarters);
+            okrs = ref(bhags[0].quarters);
             currentOkrIndex = 0;
         }
         let currentOkr = ref(okrs.value[currentOkrIndex]);
