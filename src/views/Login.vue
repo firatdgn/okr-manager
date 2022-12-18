@@ -48,7 +48,7 @@ export default {
             ctx.emit("registering");
         }
         function login() {
-            let form = new Form("http://localhost:8888/users/sign-in", {
+            let form = new Form("users/sign-in", {
                 username: username.value,
                 password: password.value,
             });
@@ -58,15 +58,9 @@ export default {
                     response.data.status === "success"
                 ) {
                     sessionStorage.setItem("accessToken", response.data.data);
-                    new Form("http://localhost:8888/bhags")
-                        .get()
-                        .then((okrResponse) => {
-                            sessionStorage.setItem(
-                                "okr",
-                                JSON.stringify(okrResponse.data)
-                            );
-                            ctx.emit("loggedIn");
-                        });
+                    Form.getBhags().then((okrResponse) => {
+                        ctx.emit("loggedIn");
+                    });
                 }
             });
         }

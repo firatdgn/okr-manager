@@ -45,7 +45,7 @@ export default {
         let username = ref("");
         let password = ref("");
         function register() {
-            let form = new Form("http://localhost:8888/users/sign-up", {
+            let form = new Form("users/sign-up", {
                 username: username.value,
                 password: password.value,
             });

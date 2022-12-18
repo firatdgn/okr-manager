@@ -1,7 +1,11 @@
 import axios from "axios";
+import { useOkrStore } from "../store/Okr";
 export default class Form {
+    static apiUrl() {
+        return "http://localhost:8888";
+    }
     constructor(targetEndpoint, elements = {}) {
-        this.targetEndpoint = targetEndpoint;
+        this.targetEndpoint = `${Form.apiUrl()}/${targetEndpoint}`;
         this.elements = elements;
         this.headers = {
             "Content-Type": "application/json",
@@ -24,6 +28,29 @@ export default class Form {
         return axios
             .get(this.targetEndpoint, {
                 headers: headers,
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+                throw error;
+            });
+    }
+    static getBhags() {
+        return axios
+            .get(`${Form.apiUrl()}/bhags`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${sessionStorage.getItem(
+                        "accessToken"
+                    )}`,
+                },
+            })
+            .then((response) => {
+                sessionStorage.setItem("okr", JSON.stringify(response.data));
+                const store = useOkrStore();
+                store.$patch({
+                    bhags: JSON.parse(sessionStorage.getItem("okr")),
+                });
+                return response;
             })
             .catch((error) => {
                 alert(error.response.data.message);
