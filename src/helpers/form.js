@@ -79,4 +79,15 @@ export default class Form {
                 throw error;
             });
     }
+    delete() {
+        const headers = this.headers;
+        return axios
+            .delete(this.targetEndpoint, {
+                headers: headers,
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+                throw error;
+            });
+    }
 }

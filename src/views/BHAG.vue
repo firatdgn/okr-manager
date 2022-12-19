@@ -39,9 +39,12 @@ export default {
         let bhags = ref(store.bhags);
         function deleteBhag(deletedBhag) {
             if (confirm("Do you really want to delete this BHAG?")) {
-                bhags.value = bhags.value.filter(
-                    (elem) => elem.id !== deletedBhag.value.id
-                );
+                new Form(`bhags/${deletedBhag.value.id}`).delete().then(() => {
+                    Form.getBhags().then((response) => {
+                        store.resetBhags();
+                        bhags.value = store.bhags;
+                    });
+                });
             }
         }
 
