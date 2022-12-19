@@ -68,4 +68,15 @@ export default class Form {
                 throw error;
             });
     }
+    put() {
+        const headers = this.headers;
+        return axios
+            .put(this.targetEndpoint, this._data, {
+                headers: headers,
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+                throw error;
+            });
+    }
 }

@@ -96,6 +96,7 @@ import { ref } from "@vue/reactivity";
 import CreateNewButton from "./CreateNewButton.vue";
 import CreateNewTarget from "./CreateNewTarget.vue";
 import BhagQuarter from "./BhagQuarter.vue";
+import Form from "../helpers/form";
 export default {
     props: ["order", "bhag"],
     setup(props, context) {
@@ -105,7 +106,16 @@ export default {
             if (e.keyCode === 27 || isValueSame) {
                 bhag.value.content = oldContent;
             } else {
-                oldContent = bhag.value.content;
+                const form = new Form(`bhags/${bhag.value.id}`, {
+                    bhagContent: bhag.value.content,
+                })
+                    .put()
+                    .then((response) => {
+                        oldContent = bhag.value.content;
+                    })
+                    .catch((err) => {
+                        bhag.value.content = oldContent;
+                    });
             }
             bhag.value.isEditing = !bhag.value.isEditing;
         }
