@@ -45,6 +45,9 @@ export default class Form {
                 },
             })
             .then((response) => {
+                if (response.status === 304) {
+                    return Form.getBhags();
+                }
                 sessionStorage.setItem("okr", JSON.stringify(response.data));
                 const store = useOkrStore();
                 store.$patch({
