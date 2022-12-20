@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useOkrStore } from "../store/Okr";
 export default class Form {
     static apiUrl() {
         return "http://localhost:8888";
@@ -45,14 +44,7 @@ export default class Form {
                 },
             })
             .then((response) => {
-                if (response.status === 304) {
-                    return Form.getBhags();
-                }
                 sessionStorage.setItem("okr", JSON.stringify(response.data));
-                const store = useOkrStore();
-                store.$patch({
-                    bhags: JSON.parse(sessionStorage.getItem("okr")),
-                });
                 return response;
             })
             .catch((error) => {

@@ -26,7 +26,6 @@ import { ref } from "@vue/reactivity";
 import BHAG from "../components/BHAG.vue";
 import CreateNewTarget from "../components/CreateNewTarget.vue";
 import CreateNewButton from "../components/CreateNewButton.vue";
-import { useOkrStore } from "../store/Okr";
 import Form from "../helpers/form";
 export default {
     components: {
@@ -35,15 +34,14 @@ export default {
         CreateNewButton,
     },
     setup() {
-        const store = useOkrStore();
-        let bhags = ref(store.bhags);
+        const bhags = ref(JSON.parse(sessionStorage.getItem("okr")));
+        function resetBhags() {
+            bhags.value = JSON.parse(sessionStorage.getItem("okr"));
+        }
         function deleteBhag(deletedBhag) {
             if (confirm("Do you really want to delete this BHAG?")) {
                 new Form(`bhags/${deletedBhag.value.id}`).delete().then(() => {
-                    Form.getBhags().then((response) => {
-                        store.resetBhags();
-                        bhags.value = store.bhags;
-                    });
+                    Form.getBhags().then((response) => resetBhags());
                 });
             }
         }
@@ -59,10 +57,7 @@ export default {
             })
                 .post()
                 .then(() => {
-                    Form.getBhags().then((response) => {
-                        store.resetBhags();
-                        bhags.value = store.bhags;
-                    });
+                    Form.getBhags().then((response) => resetBhags());
                 });
         }
         return {

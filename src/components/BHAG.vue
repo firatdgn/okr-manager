@@ -143,12 +143,14 @@ export default {
                 return;
             }
             toggleNewQuarter();
-            bhag.value.quarters.push({
-                //TODO: add here id which comes from db
-                id: bhag.value.quarters.length + 1,
-                startDate: quarterContent.value.startDate,
-                endDate: quarterContent.value.endDate,
-            });
+            new Form(`bhags/${bhag.value.id}/quarters`, {
+                startedAt: quarterContent.value.startDate,
+                finishedAt: quarterContent.value.endDate,
+            })
+                .post()
+                .then((response) => {
+                    Form.getBhags();
+                });
         }
         function deleteQuarter(deletedQuarter) {
             if (confirm("Do you really want to delete this quarter?")) {

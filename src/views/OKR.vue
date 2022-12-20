@@ -34,16 +34,14 @@ import Objective from "../components/Objective.vue";
 import CreateNewButton from "../components/CreateNewButton.vue";
 import { ref } from "@vue/reactivity";
 import CreateNewTarget from "../components/CreateNewTarget.vue";
-import { useOkrStore } from "../store/Okr";
 import { isInRange } from "../helpers/generic";
 export default {
     components: { Quarter, Objective, CreateNewButton, CreateNewTarget },
     setup() {
         let okrs;
         let currentOkrIndex;
-        const store = useOkrStore();
-        let bhags = store.bhags;
-        for (let bhag of bhags) {
+        let bhags = ref(JSON.parse(sessionStorage.getItem("okr")));
+        for (let bhag of bhags.value) {
             currentOkrIndex = 0;
             for (let quarter of bhag.quarters) {
                 if (
@@ -63,7 +61,7 @@ export default {
             }
         }
         if (!okrs) {
-            okrs = ref(store.bhags[0].quarters);
+            okrs = ref(bhags.value[0].quarters);
             currentOkrIndex = 0;
         }
         let currentOkr = ref(okrs.value[currentOkrIndex]);
