@@ -60,7 +60,7 @@
                         type="date"
                         @keydown.enter="save"
                         @keydown.esc="$emit('cancel')"
-                        v-model="newTarget.endDate"
+                        v-model="newTarget.finishDate"
                     />
                 </div>
                 <div class="is-flex" v-else-if="targetType === 'crf'">
@@ -148,7 +148,7 @@ export default {
         } else if (props.targetType === "quarter") {
             newTarget = ref({
                 startDate: "",
-                endDate: "",
+                finishDate: "",
             });
         } else if (props.targetType === "crf") {
             newTarget = ref({

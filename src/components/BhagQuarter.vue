@@ -30,7 +30,7 @@
                         type="date"
                         @keydown.enter="toggleEditQuarter"
                         @keydown.esc="toggleEditQuarter"
-                        v-model="quarter.endDate"
+                        v-model="quarter.finishDate"
                     />
                 </div>
                 <span v-else>{{ quarterContent }}</span>
@@ -74,16 +74,19 @@
 import { ref } from "@vue/reactivity";
 import { computed } from "@vue/runtime-core";
 import moment from "moment";
+import Form from "../helpers/form";
 export default {
-    props: ["quarter", "order"],
+    props: ["quarter", "order", "bhagId"],
     setup(props, context) {
         let quarter = ref(props.quarter);
         const quarterContent = computed(() => {
             let startDate = moment(quarter.value.startDate).format(
                 "DD.MM.YYYY"
             );
-            let endDate = moment(quarter.value.endDate).format("DD.MM.YYYY");
-            return `${startDate} - ${endDate}`;
+            let finishDate = moment(quarter.value.finishDate).format(
+                "DD.MM.YYYY"
+            );
+            return `${startDate} - ${finishDate}`;
         });
         function deleteQuarter() {
             context.emit("deleteQuarter", quarter);
@@ -94,6 +97,21 @@ export default {
                 quarter.value.content = oldQuarter;
             } else {
                 oldQuarter = quarter.value;
+                console.log(quarter.value);
+                const form = new Form(
+                    `bhags/${props.bhagId}/quarters/${quarter.value.id}`,
+                    {
+                        startedAt: quarter.value.startDate,
+                        finishedAt: quarter.value.finishDate,
+                    }
+                )
+                    .put()
+                    .then((response) => {
+                        oldContent = quarter.value;
+                    })
+                    .catch((err) => {
+                        quarter.value = oldContent;
+                    });
             }
             quarter.value.isEditing = !quarter.value.isEditing;
         }

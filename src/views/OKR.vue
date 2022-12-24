@@ -3,7 +3,7 @@
         @increaseCurrentQuarter="increaseCurrentQuarter"
         @decreaseCurrentQuarter="decreaseCurrentQuarter"
         :start-date="currentOkr.startDate"
-        :end-date="currentOkr.endDate"
+        :end-date="currentOkr.finishDate"
         :quarter="currentOkr.quarter"
     ></Quarter>
     <Objective
@@ -48,7 +48,7 @@ export default {
                     isInRange(
                         Date.now(),
                         new Date(quarter.startDate).getTime(),
-                        new Date(quarter.endDate).getTime()
+                        new Date(quarter.finishDate).getTime()
                     )
                 ) {
                     okrs = ref(bhag.quarters);

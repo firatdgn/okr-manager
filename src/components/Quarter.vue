@@ -27,12 +27,12 @@
 import { computed } from "@vue/runtime-core";
 import moment from "moment";
 export default {
-    props: ["quarter", "startDate", "endDate"],
+    props: ["quarter", "startDate", "finishDate"],
     setup(props) {
         const dateRange = computed(
             () =>
                 `${moment(props.startDate).format("DD.MM.YYYY")} - ${moment(
-                    props.endDate
+                    props.finishDate
                 ).format("DD.MM.YYYY")}`
         );
         return {

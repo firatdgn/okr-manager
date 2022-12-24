@@ -69,10 +69,11 @@
     </div>
     <div class="quarters" v-if="showQuarters">
         <BhagQuarter
-            v-for="(quarter, i) of bhag.quarters"
+            v-for="(quarter, i) of quarters"
             :order="i + 1"
             :key="quarter.id"
             :quarter="quarter"
+            :bhag-id="bhag.id"
             @deleteQuarter="deleteQuarter"
         ></BhagQuarter>
         <CreateNewButton
@@ -97,10 +98,14 @@ import CreateNewButton from "./CreateNewButton.vue";
 import CreateNewTarget from "./CreateNewTarget.vue";
 import BhagQuarter from "./BhagQuarter.vue";
 import Form from "../helpers/form";
+import { computed } from "@vue/runtime-core";
 export default {
     props: ["order", "bhag"],
     setup(props, context) {
         let bhag = ref(props.bhag);
+        let quarters = computed(() => {
+            return props.bhag.quarters;
+        });
         let oldContent = bhag.value.content;
         function toggleEditBhag(e, isValueSame = false) {
             if (e.keyCode === 27 || isValueSame) {
@@ -131,13 +136,15 @@ export default {
             showCreateNewButton.value = !showCreateNewButton.value;
         }
         function storeNewQuarter(quarterContent) {
-            if (quarterContent.value.startDate > quarterContent.value.endDate) {
+            if (
+                quarterContent.value.startDate > quarterContent.value.finishDate
+            ) {
                 alert(`Start Date can't be bigger than End Date.`);
                 return;
             }
             if (
                 !quarterContent.value.startDate ||
-                !quarterContent.value.endDate
+                !quarterContent.value.finishDate
             ) {
                 alert(`One of the given date is invalid.`);
                 return;
@@ -145,23 +152,29 @@ export default {
             toggleNewQuarter();
             new Form(`bhags/${bhag.value.id}/quarters`, {
                 startedAt: quarterContent.value.startDate,
-                finishedAt: quarterContent.value.endDate,
+                finishedAt: quarterContent.value.finishDate,
             })
                 .post()
                 .then((response) => {
-                    Form.getBhags();
+                    Form.getBhags().then(() => context.emit("resetBhags"));
                 });
         }
         function deleteQuarter(deletedQuarter) {
+            console.log(deletedQuarter);
             if (confirm("Do you really want to delete this quarter?")) {
-                bhag.value.quarters = bhag.value.quarters.filter(
-                    (elem) => deletedQuarter.value.id !== elem.id
-                );
+                new Form(
+                    `bhags/${bhag.value.id}/quarters/${deletedQuarter.value.id}`
+                )
+                    .delete()
+                    .then((response) =>
+                        Form.getBhags().then(() => context.emit("resetBhags"))
+                    );
             }
         }
 
         return {
             bhag,
+            quarters,
             toggleEditBhag,
             deleteBhag,
             showQuarters,

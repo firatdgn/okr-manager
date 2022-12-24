@@ -5,6 +5,7 @@
         :key="bhag.id"
         :order="key + 1"
         @deleteBhag="deleteBhag"
+        @resetBhags="resetBhags"
     ></BHAG>
     <CreateNewButton
         v-if="showCreateNewButton"
@@ -62,6 +63,7 @@ export default {
         }
         return {
             bhags,
+            resetBhags,
             deleteBhag,
             showCreateNewButton,
             toggleNewBhag,
