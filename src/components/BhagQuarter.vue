@@ -97,12 +97,15 @@ export default {
                 quarter.value.content = oldQuarter;
             } else {
                 oldQuarter = quarter.value;
-                console.log(quarter.value);
                 const form = new Form(
                     `bhags/${props.bhagId}/quarters/${quarter.value.id}`,
                     {
-                        startedAt: quarter.value.startDate,
-                        finishedAt: quarter.value.finishDate,
+                        startedAt: moment(quarter.value.startDate).format(
+                            "YY-MM-DD HH:mm:ss"
+                        ),
+                        finishedAt: moment(quarter.value.finishDate).format(
+                            "YY-MM-DD HH:mm:ss"
+                        ),
                     }
                 )
                     .put()

@@ -160,7 +160,6 @@ export default {
                 });
         }
         function deleteQuarter(deletedQuarter) {
-            console.log(deletedQuarter);
             if (confirm("Do you really want to delete this quarter?")) {
                 new Form(
                     `bhags/${bhag.value.id}/quarters/${deletedQuarter.value.id}`
