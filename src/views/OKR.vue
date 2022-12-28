@@ -11,7 +11,10 @@
         :key="objective.id"
         :order="index + 1"
         :objective="objective"
+        :bhagId="currentBhag"
+        :quarterId="currentOkr.id"
         @deleteObjective="deleteObjective"
+        @resetBhags="resetBhags"
     ></Objective>
     <CreateNewButton
         v-if="showCreateNewButton"
@@ -35,14 +38,20 @@ import CreateNewButton from "../components/CreateNewButton.vue";
 import { ref } from "@vue/reactivity";
 import CreateNewTarget from "../components/CreateNewTarget.vue";
 import { isInRange } from "../helpers/generic";
+import { computed } from "@vue/runtime-core";
+import Form from "../helpers/form";
 export default {
     components: { Quarter, Objective, CreateNewButton, CreateNewTarget },
     setup() {
         let okrs;
         let currentOkrIndex;
+        let currentBhag;
         let bhags = ref(JSON.parse(sessionStorage.getItem("okr")));
+        function resetBhags() {
+            bhags.value = JSON.parse(sessionStorage.getItem("okr"));
+        }
         for (let bhag of bhags.value) {
-            currentOkrIndex = 0;
+            currentOkrIndex = ref(0);
             for (let quarter of bhag.quarters) {
                 if (
                     isInRange(
@@ -51,56 +60,63 @@ export default {
                         new Date(quarter.finishDate).getTime()
                     )
                 ) {
-                    okrs = ref(bhag.quarters);
+                    okrs = computed(() => bhag.quarters);
+                    currentBhag = bhag.id;
                     break;
                 }
-                currentOkrIndex++;
+                currentOkrIndex.value++;
             }
             if (okrs) {
                 break;
             }
         }
         if (!okrs) {
-            okrs = ref(bhags.value[0].quarters);
-            currentOkrIndex = 0;
+            currentBhag = bhags.value[0].id;
+            okrs = computed(() => bhags.value[0].quarters);
+            currentOkrIndex.value = 0;
         }
-        let currentOkr = ref(okrs.value[currentOkrIndex]);
+        let currentOkr = computed(() => okrs.value[currentOkrIndex.value]);
         let showCreateNewButton = ref(true);
         function increaseCurrentQuarter() {
-            if (okrs.value.length - 1 === currentOkrIndex) {
-                currentOkrIndex = 0;
+            if (okrs.value.length - 1 === currentOkrIndex.value) {
+                currentOkrIndex.value = 0;
             } else {
-                currentOkrIndex++;
+                currentOkrIndex.value++;
             }
-            currentOkr.value = okrs.value[currentOkrIndex];
+            currentOkr.value = okrs.value[currentOkrIndex.value];
         }
         function decreaseCurrentQuarter() {
-            if (currentOkrIndex === 0) {
-                currentOkrIndex = okrs.value.length - 1;
+            if (currentOkrIndex.value === 0) {
+                currentOkrIndex.value = okrs.value.length - 1;
             } else {
-                currentOkrIndex--;
+                currentOkrIndex.value--;
             }
-            currentOkr.value = okrs.value[currentOkrIndex];
+            currentOkr.value = okrs.value[currentOkrIndex.value];
         }
         function toggleNewOkr() {
             showCreateNewButton.value = !showCreateNewButton.value;
         }
         function storeNewOkr(newOkr) {
             toggleNewOkr();
-            currentOkr.value.objectives.push({
-                //TODO: add here id which comes from db
-                id:
-                    `${currentOkr.value.quarter.split("Q")[1]}` +
-                    (currentOkr.value.objectives.length + 1),
-                content: newOkr,
-                keyResults: [],
-            });
+            new Form(
+                `bhags/${currentBhag}/quarters/${currentOkr.value.id}/objectives`,
+                {
+                    objectiveContent: newOkr.value,
+                }
+            )
+                .post()
+                .then((response) =>
+                    Form.getBhags().then((response) => resetBhags())
+                );
         }
         function deleteObjective(deletedObjective) {
             if (confirm("Do you really want to delete this Objective?")) {
-                currentOkr.value.objectives =
-                    currentOkr.value.objectives.filter(
-                        (elem) => elem.id !== deletedObjective.value.id
+                new Form(
+                    `bhags/${currentBhag}/quarters/${currentOkr.value.id}/objectives/${deletedObjective.value.id}`
+                )
+                    .delete()
+                    .then((response) =>
+                        Form.getBhags().then((response) => resetBhags())
                     );
             }
         }
@@ -113,6 +129,8 @@ export default {
             toggleNewOkr,
             storeNewOkr,
             deleteObjective,
+            currentBhag,
+            resetBhags,
         };
     },
 };

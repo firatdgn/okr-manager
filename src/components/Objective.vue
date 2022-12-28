@@ -106,9 +106,17 @@ import KeyResult from "./KeyResult.vue";
 import CreateNewButton from "./CreateNewButton.vue";
 import CreateNewTarget from "./CreateNewTarget.vue";
 import ProgressBar from "./ProgressBar.vue";
+import Form from "../helpers/form";
 export default {
     components: { KeyResult, CreateNewButton, CreateNewTarget, ProgressBar },
-    props: ["objective", "order", "displayCrfs", "hideActions"],
+    props: [
+        "objective",
+        "order",
+        "displayCrfs",
+        "hideActions",
+        "bhagId",
+        "quarterId",
+    ],
     setup(props, context) {
         // Objective
         let objective = ref(props.objective);
@@ -124,7 +132,22 @@ export default {
             if (e.keyCode === 27 || isValueSame) {
                 objective.value.content = oldContent;
             } else {
-                oldContent = objective.value.content;
+                new Form(
+                    `bhags/${props.bhagId}/quarters/${props.quarterId}/objectives/${objective.value.id}`,
+                    {
+                        objectiveContent: objective.value.content,
+                    }
+                )
+                    .put()
+                    .then((response) => {
+                        oldContent = objective.value.content;
+                        Form.getBhags().then((response) =>
+                            context.emit("resetBhags")
+                        );
+                    })
+                    .catch((err) => {
+                        objective.value.content = oldContent;
+                    });
             }
             objective.value.isEditing = !objective.value.isEditing;
         }
