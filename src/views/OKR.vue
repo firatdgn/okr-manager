@@ -49,33 +49,40 @@ export default {
         let bhags = ref(JSON.parse(sessionStorage.getItem("okr")));
         function resetBhags() {
             bhags.value = JSON.parse(sessionStorage.getItem("okr"));
+            let oldCurrentOkrIndex = currentOkrIndex;
+            setOkrs();
+            currentOkrIndex = oldCurrentOkrIndex;
+            currentOkr.value = okrs.value[currentOkrIndex.value];
         }
-        for (let bhag of bhags.value) {
-            currentOkrIndex = ref(0);
-            for (let quarter of bhag.quarters) {
-                if (
-                    isInRange(
-                        Date.now(),
-                        new Date(quarter.startDate).getTime(),
-                        new Date(quarter.finishDate).getTime()
-                    )
-                ) {
-                    okrs = computed(() => bhag.quarters);
-                    currentBhag = bhag.id;
+        function setOkrs() {
+            for (let bhag of bhags.value) {
+                currentOkrIndex = ref(0);
+                for (let quarter of bhag.quarters) {
+                    if (
+                        isInRange(
+                            Date.now(),
+                            new Date(quarter.startDate).getTime(),
+                            new Date(quarter.finishDate).getTime()
+                        )
+                    ) {
+                        okrs = computed(() => bhag.quarters);
+                        currentBhag = bhag.id;
+                        break;
+                    }
+                    currentOkrIndex.value++;
+                }
+                if (okrs) {
                     break;
                 }
-                currentOkrIndex.value++;
-            }
-            if (okrs) {
-                break;
             }
         }
+        setOkrs();
         if (!okrs) {
             currentBhag = bhags.value[0].id;
             okrs = computed(() => bhags.value[0].quarters);
             currentOkrIndex.value = 0;
         }
-        let currentOkr = computed(() => okrs.value[currentOkrIndex.value]);
+        let currentOkr = ref(okrs.value[currentOkrIndex.value]);
         let showCreateNewButton = ref(true);
         function increaseCurrentQuarter() {
             if (okrs.value.length - 1 === currentOkrIndex.value) {
