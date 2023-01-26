@@ -3,7 +3,7 @@
         @increaseCurrentQuarter="increaseCurrentQuarter"
         @decreaseCurrentQuarter="decreaseCurrentQuarter"
         :start-date="currentOkr.startDate"
-        :end-date="currentOkr.finishDate"
+        :finish-date="currentOkr.finishDate"
         :quarter="currentOkr.quarter"
     ></Quarter>
     <Objective
