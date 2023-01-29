@@ -76,12 +76,15 @@
     </div>
     <div class="key-results" v-if="showKeyResults">
         <KeyResult
-            v-for="(keyResult, index) of objective.keyResults"
+            v-for="(keyResult, index) of keyResults"
             :key="keyResult.id"
             :order="index + 1"
             :keyResult="keyResult"
             :displayCrfs="displayCrfs"
             :hideActions="hideActions"
+            :bhagId="bhagId"
+            :quarterId="quarterId"
+            :objectiveId="objective.id"
             @deleteKeyResult="deleteKeyResult"
         ></KeyResult
         ><CreateNewButton
@@ -107,6 +110,7 @@ import CreateNewButton from "./CreateNewButton.vue";
 import CreateNewTarget from "./CreateNewTarget.vue";
 import ProgressBar from "./ProgressBar.vue";
 import Form from "../helpers/form";
+import { findById } from "../helpers/generic";
 export default {
     components: { KeyResult, CreateNewButton, CreateNewTarget, ProgressBar },
     props: [
@@ -120,6 +124,7 @@ export default {
     setup(props, context) {
         // Objective
         let objective = ref(props.objective);
+        let keyResults = ref(objective.value.keyResults);
         let showKeyResults = ref(false);
         function toggleKeyResults() {
             showKeyResults.value = !showKeyResults.value;
@@ -157,21 +162,42 @@ export default {
         }
         function storeNewKeyResult(keyResultContent) {
             toggleNewKeyResult();
-            objective.value.keyResults.push({
-                //TODO: add here id which comes from db
-                id: objective.value.keyResults.length + 1,
-                content: keyResultContent.value.content,
-                finishedAt: keyResultContent.value.finishedAt,
-                crfs: [],
-            });
+            new Form(
+                `bhags/${props.bhagId}/quarters/${props.quarterId}/objectives/${objective.value.id}/key-results`,
+                {
+                    keyResultContent: keyResultContent.value.content,
+                    keyResultRequiredStatus: keyResultContent.value.finishedAt,
+                }
+            )
+                .post()
+                .then((response) =>
+                    Form.getBhags().then((response) => {
+                        keyResults.value = resetKeyResults(response.data);
+                    })
+                );
         }
         // Key Result
         function deleteKeyResult(deletedKeyResult) {
             if (confirm("Do you really want to delete this Key Result?")) {
-                objective.value.keyResults = objective.value.keyResults.filter(
-                    (elem) => deletedKeyResult.value.id !== elem.id
-                );
+                new Form(
+                    `bhags/${props.bhagId}/quarters/${props.quarterId}/objectives/${objective.value.id}/key-results/${deletedKeyResult.value.id}`
+                )
+                    .delete()
+                    .then((response) =>
+                        Form.getBhags().then((response) => {
+                            keyResults.value = resetKeyResults(response.data);
+                        })
+                    );
             }
+        }
+        function resetKeyResults(bhags) {
+            let tempBhag = findById(props.bhagId, bhags);
+            let tempQuarter = findById(props.quarterId, tempBhag.quarters);
+            let tempObjective = findById(
+                objective.value.id,
+                tempQuarter.objectives
+            );
+            return tempObjective.keyResults;
         }
         let objectiveCurrentStatus = computed(() => {
             let currentStatus = 0;
@@ -199,6 +225,7 @@ export default {
         });
         return {
             objective,
+            keyResults,
             showKeyResults,
             showCreateNewButton,
             toggleKeyResults,

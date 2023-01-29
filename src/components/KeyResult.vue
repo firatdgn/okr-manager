@@ -20,7 +20,6 @@
                 <input
                     class="input"
                     type="text"
-                    :ref="(el) => el && el.focus()"
                     v-if="keyResult.isEditing"
                     v-model="keyResult.content"
                     @keydown.enter="toggleEditKeyResult"
@@ -118,8 +117,17 @@ import CRF from "./CRF.vue";
 import CreateNewButton from "./CreateNewButton.vue";
 import CreateNewTarget from "./CreateNewTarget.vue";
 import ProgressBar from "./ProgressBar.vue";
+import Form from "../helpers/form";
 export default {
-    props: ["keyResult", "order", "displayCrfs", "hideActions"],
+    props: [
+        "bhagId",
+        "quarterId",
+        "objectiveId",
+        "keyResult",
+        "order",
+        "displayCrfs",
+        "hideActions",
+    ],
     components: {
         CRF,
         CreateNewButton,
@@ -135,10 +143,21 @@ export default {
         function toggleEditKeyResult(e, isValueSame = false) {
             if (e.keyCode === 27 || isValueSame) {
                 keyResult.value.content = oldContent;
+                keyResult.value.isEditing = !keyResult.value.isEditing;
             } else {
-                oldContent = keyResult.value.content;
+                new Form(
+                    `bhags/${props.bhagId}/quarters/${props.quarterId}/objectives/${props.objectiveId}/key-results/${keyResult.value.id}`,
+                    {
+                        keyResultContent: keyResult.value.content,
+                        keyResultRequiredStatus: keyResult.value.finishedAt,
+                    }
+                )
+                    .put()
+                    .then((response) => {
+                        oldContent = keyResult.value.content;
+                        keyResult.value.isEditing = !keyResult.value.isEditing;
+                    });
             }
-            keyResult.value.isEditing = !keyResult.value.isEditing;
         }
         let showCrfs = ref(false);
         function toggleCrfs() {
