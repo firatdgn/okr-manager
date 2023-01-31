@@ -22,18 +22,20 @@ export default class Form {
         }
         this._data = elements;
     }
-    get() {
+    get(showErrorMessage) {
         const headers = this.headers;
         return axios
             .get(this.targetEndpoint, {
                 headers: headers,
             })
             .catch((error) => {
-                alert(error.response.data.message);
+                if (showErrorMessage) {
+                    alert(error.response.data.message);
+                }
                 throw error;
             });
     }
-    static getBhags() {
+    static getBhags(showErrorMessage = true) {
         return axios
             .get(`${Form.apiUrl()}/bhags`, {
                 headers: {
@@ -48,40 +50,48 @@ export default class Form {
                 return response;
             })
             .catch((error) => {
-                alert(error.response.data.message);
+                if (showErrorMessage) {
+                    alert(error.response.data.message);
+                }
                 throw error;
             });
     }
-    post() {
+    post(showErrorMessage = true) {
         const headers = this.headers;
         return axios
             .post(this.targetEndpoint, this._data, {
                 headers: headers,
             })
             .catch((error) => {
-                alert(error.response.data.message);
+                if (showErrorMessage) {
+                    alert(error.response.data.message);
+                }
                 throw error;
             });
     }
-    put() {
+    put(showErrorMessage = true) {
         const headers = this.headers;
         return axios
             .put(this.targetEndpoint, this._data, {
                 headers: headers,
             })
             .catch((error) => {
-                alert(error.response.data.message);
+                if (showErrorMessage) {
+                    alert(error.response.data.message);
+                }
                 throw error;
             });
     }
-    delete() {
+    delete(showErrorMessage = true) {
         const headers = this.headers;
         return axios
             .delete(this.targetEndpoint, {
                 headers: headers,
             })
             .catch((error) => {
-                alert(error.response.data.message);
+                if (showErrorMessage) {
+                    alert(error.response.data.message);
+                }
                 throw error;
             });
     }

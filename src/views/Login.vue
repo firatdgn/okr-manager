@@ -40,8 +40,23 @@
 <script>
 import { ref } from "@vue/reactivity";
 import Form from "../helpers/form";
+import axios from "axios";
 export default {
     setup(props, ctx) {
+        let token = sessionStorage.getItem("accessToken");
+        console.log(token);
+        if (token !== null) {
+            let form = new Form("is-token-valid", {
+                "access-token": token,
+            })
+                .post(false)
+                .then((response) => {
+                    console.log(response.data.status);
+                    if (response.data.status === "success") {
+                        ctx.emit("loggedIn");
+                    }
+                });
+        }
         let username = ref("");
         let password = ref("");
         function register() {
