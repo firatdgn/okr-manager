@@ -43,7 +43,6 @@ import Form from "../helpers/form";
 export default {
     setup(props, ctx) {
         let token = sessionStorage.getItem("accessToken");
-        console.log(token);
         if (token !== null) {
             let form = new Form("is-token-valid", {
                 "access-token": token,

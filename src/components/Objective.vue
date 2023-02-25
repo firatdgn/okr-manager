@@ -1,18 +1,12 @@
 <template>
     <div
-        class="
-            is-flex is-justify-content-space-between is-align-items-baseline
-            objective
-        "
+        class="is-flex is-justify-content-space-between is-align-items-baseline objective"
     >
         <div
             class="box is-flex-grow-3 is-flex is-justify-content-space-between"
         >
             <div
-                class="
-                    objective-number
-                    is-flex is-justify-content-center is-align-items-center
-                "
+                class="objective-number is-flex is-justify-content-center is-align-items-center"
             >
                 O - {{ order }}
             </div>
@@ -35,11 +29,7 @@
                 ></span>
             </div>
             <div
-                class="
-                    objective-actions
-                    is-flex is-justify-content-center is-align-items-center
-                    pr-3
-                "
+                class="objective-actions is-flex is-justify-content-center is-align-items-center pr-3"
             >
                 <span
                     class="icon is-medium is-clickable"

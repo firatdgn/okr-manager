@@ -3,7 +3,7 @@
         @increaseCurrentQuarter="increaseCurrentQuarter"
         @decreaseCurrentQuarter="decreaseCurrentQuarter"
         :start-date="currentOkr.startDate"
-        :end-date="currentOkr.finishDate"
+        :finish-date="currentOkr.finishDate"
         :quarter="currentOkr.quarter"
     ></Quarter>
     <Objective
@@ -11,6 +11,8 @@
         :key="objective.id"
         :order="index + 1"
         :objective="objective"
+        :bhagId="currentBhag"
+        :quarterId="currentOkr.id"
         :displayCrfs="true"
         :hideActions="true"
         @deleteObjective="deleteObjective"
@@ -29,8 +31,9 @@ export default {
     setup() {
         let bhags = ref(JSON.parse(sessionStorage.getItem("okr")));
         let okrs;
+        let currentBhag;
         let currentOkrIndex;
-        for (let bhag of bhags) {
+        for (let bhag of bhags.value) {
             currentOkrIndex = 0;
             for (let quarter of bhag.quarters) {
                 if (
@@ -41,6 +44,7 @@ export default {
                     )
                 ) {
                     okrs = ref(bhag.quarters);
+                    currentBhag = bhag.id;
                     break;
                 }
                 currentOkrIndex++;
@@ -50,7 +54,8 @@ export default {
             }
         }
         if (!okrs) {
-            okrs = ref(bhags[0].quarters);
+            currentBhag = bhags.value[0].id;
+            okrs = ref(bhags.value[0].quarters);
             currentOkrIndex = 0;
         }
         let currentOkr = ref(okrs.value[currentOkrIndex]);
@@ -82,6 +87,7 @@ export default {
         return {
             okrs,
             currentOkr,
+            currentBhag,
             showCreateNewButton,
             increaseCurrentQuarter,
             decreaseCurrentQuarter,

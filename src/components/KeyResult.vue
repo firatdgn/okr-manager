@@ -1,18 +1,12 @@
 <template>
     <div
-        class="
-            is-flex is-justify-content-space-between is-align-items-baseline
-            key-result
-        "
+        class="is-flex is-justify-content-space-between is-align-items-baseline key-result"
     >
         <div
             class="box is-flex-grow-3 is-flex is-justify-content-space-between"
         >
             <div
-                class="
-                    key-result-number
-                    is-flex is-justify-content-center is-align-items-center
-                "
+                class="key-result-number is-flex is-justify-content-center is-align-items-center"
             >
                 KR - {{ order }}
             </div>
@@ -42,11 +36,7 @@
                 ></span>
             </div>
             <div
-                class="
-                    key-result-actions
-                    is-flex is-justify-content-center is-align-items-center
-                    pr-3
-                "
+                class="key-result-actions is-flex is-justify-content-center is-align-items-center pr-3"
             >
                 <span
                     class="icon is-medium is-clickable"
@@ -118,6 +108,7 @@ import CreateNewButton from "./CreateNewButton.vue";
 import CreateNewTarget from "./CreateNewTarget.vue";
 import ProgressBar from "./ProgressBar.vue";
 import Form from "../helpers/form";
+import { findById } from "../helpers/generic";
 export default {
     props: [
         "bhagId",
@@ -175,9 +166,20 @@ export default {
             showCreateNewButton.value = !showCreateNewButton.value;
         }
         function storeNewCrf(newCrf) {
-            //TODO: add id of CRF
-            keyResult.value.crfs.push(newCrf);
             toggleNewCrf();
+            new Form(
+                `bhags/${props.bhagId}/quarters/${props.quarterId}/objectives/${props.objectiveId}/key-results/${keyResult.value.id}/crfs`,
+                {
+                    crfDate: newCrf.value.date,
+                    currentStatus: newCrf.value.currentStatus,
+                }
+            )
+                .post()
+                .then(() => {
+                    Form.getBhags().then((response) => {
+                        keyResult.value.crfs = resetCrfs(response.data);
+                    });
+                });
         }
         let keyResultCurrentStatus = computed(() => {
             if (keyResult.value.crfs && keyResult.value.crfs.length > 0) {
@@ -196,6 +198,19 @@ export default {
             }
             return 0;
         });
+        function resetCrfs(bhags) {
+            let tempBhag = findById(props.bhagId, bhags);
+            let tempQuarter = findById(props.quarterId, tempBhag.quarters);
+            let tempObjective = findById(
+                props.objectiveId,
+                tempQuarter.objectives
+            );
+            let tempKeyResults = findById(
+                keyResult.value.id,
+                tempObjective.keyResults
+            );
+            return tempKeyResults.crfs;
+        }
         return {
             keyResult,
             deleteKeyResult,
