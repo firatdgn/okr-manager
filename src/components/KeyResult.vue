@@ -156,9 +156,15 @@ export default {
         }
         function deleteCrf(deletedCrf) {
             if (confirm("Do you really want to delete this CRF")) {
-                keyResult.value.crfs = keyResult.value.crfs.filter(
-                    (elem) => deletedCrf.value.id !== elem.id
-                );
+                new Form(
+                    `bhags/${props.bhagId}/quarters/${props.quarterId}/objectives/${props.objectiveId}/key-results/${keyResult.value.id}/crfs/${deletedCrf.value.id}`
+                )
+                    .delete()
+                    .then(() => {
+                        Form.getBhags().then((response) => {
+                            keyResult.value.crfs = resetCrfs(response.data);
+                        });
+                    });
             }
         }
         let showCreateNewButton = ref(true);
