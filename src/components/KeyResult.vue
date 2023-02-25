@@ -81,6 +81,10 @@
             v-bind:key="crf.id"
             :crf="crf"
             :order="index + 1"
+            :bhagId="bhagId"
+            :quarterId="quarterId"
+            :objectiveId="objectiveId"
+            :keyResultId="keyResult.id"
             @deleteCrf="deleteCrf"
         ></CRF>
         <CreateNewButton

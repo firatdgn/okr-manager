@@ -1,18 +1,12 @@
 <template>
     <div
-        class="
-            is-flex is-justify-content-space-between is-align-items-baseline
-            crf
-        "
+        class="is-flex is-justify-content-space-between is-align-items-baseline crf"
     >
         <div
             class="box is-flex-grow-3 is-flex is-justify-content-space-between"
         >
             <div
-                class="
-                    crf-number
-                    is-flex is-justify-content-center is-align-items-center
-                "
+                class="crf-number is-flex is-justify-content-center is-align-items-center"
             >
                 CRF - {{ order }}
             </div>
@@ -38,11 +32,7 @@
                 >
             </div>
             <div
-                class="
-                    key-result-actions
-                    is-flex is-justify-content-center is-align-items-center
-                    pr-3
-                "
+                class="key-result-actions is-flex is-justify-content-center is-align-items-center pr-3"
             >
                 <span
                     class="icon is-medium is-clickable"
@@ -73,8 +63,16 @@
 import { ref } from "@vue/reactivity";
 import moment from "moment";
 import { computed } from "@vue/runtime-core";
+import Form from "../helpers/form";
 export default {
-    props: ["crf", "order"],
+    props: [
+        "crf",
+        "order",
+        "bhagId",
+        "quarterId",
+        "objectiveId",
+        "keyResultId",
+    ],
     setup(props, context) {
         let currentCrf = ref(props.crf);
         let isEditing = ref(false);
@@ -87,8 +85,21 @@ export default {
                 currentCrf.value.currentStatus = oldContent.currentStatus;
                 currentCrf.value.date = oldContent.date;
             } else {
-                oldContent.currentStatus = currentCrf.value.currentStatus;
-                oldContent.date = currentCrf.value.date;
+                new Form(
+                    `bhags/${props.bhagId}/quarters/${props.quarterId}/objectives/${props.objectiveId}/key-results/${props.keyResultId}/crfs/${currentCrf.value.id}`,
+                    {
+                        crfDate: moment(currentCrf.value.date).format(
+                            "YYYY-MM-DD"
+                        ),
+                        currentStatus: currentCrf.value.currentStatus,
+                    }
+                )
+                    .put()
+                    .then((response) => {
+                        oldContent.currentStatus =
+                            currentCrf.value.currentStatus;
+                        oldContent.date = currentCrf.value.date;
+                    });
             }
             isEditing.value = !isEditing.value;
         }
