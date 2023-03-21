@@ -1,7 +1,7 @@
 import axios from "axios";
 export default class Form {
     static apiUrl() {
-        return "http://localhost:8888";
+        return "/api";
     }
     constructor(targetEndpoint, elements = {}) {
         this.targetEndpoint = `${Form.apiUrl()}/${targetEndpoint}`;

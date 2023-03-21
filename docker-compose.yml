@@ -2,5 +2,13 @@ version: "3"
 services:
   web:
     build: .
+    restart: always
+    container_name: frontend
+    networks:
+      - frontend
     ports:
       - 8080:80
+
+networks:
+  frontend:
+    name: frontend
